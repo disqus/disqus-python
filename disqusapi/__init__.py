@@ -2,7 +2,7 @@
 disqus-python
 ~~~~~~~~~~~~~
 
-disqus = DisqusAPI(public=public_key, secret=secret_key, format='json')
+disqus = DisqusAPI(api_secret=secret_key)
 disqus.trends.listThreads()
 
 """
@@ -18,7 +18,16 @@ except:
 
     INTERFACES = {
         'users': {
+            'details': {
+                'method': 'GET',
+            },
             'listActivity': {
+                'method': 'GET',
+            },
+            'listForums': {
+                'method': 'GET',
+            },
+            'listActiveForums': {
                 'method': 'GET',
             },
         },

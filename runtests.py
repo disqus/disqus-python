@@ -1,6 +1,6 @@
 import unittest
 
-from disqusapi import DisqusAPI
+from disqusapi import DisqusAPI, APIError
 
 class DisqusAPITest(unittest.TestCase):
     API_SECRET = 'b'*64
@@ -13,7 +13,7 @@ class DisqusAPITest(unittest.TestCase):
     
     def test_users_listActivity(self):
         api = DisqusAPI(self.API_SECRET)
-        api.users.listActivity(foo='bar')
+        self.assertRaises(APIError, api.users.listActivity, foo='bar')
 
 if __name__ == '__main__':
     unittest.main()
