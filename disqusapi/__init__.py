@@ -58,19 +58,18 @@ class Resource(object):
 
         api = self.api
 
-        if 'format' not in kwargs:
-            kwargs['format'] = api.format
         if 'api_secret' not in kwargs:
             kwargs['api_secret'] = api.key
 
         version = kwargs.pop('version', api.version)
+        format = kwargs.pop('format', api.format)
 
         if api.is_secure:
             conn = httplib.HTTPSConnection(SSL_HOST)
         else:
             conn = httplib.HTTPConnection(HOST)
 
-        path = '/api/%s/%s' % (version, '/'.join(self.tree))
+        path = '/api/%s/%s.%s' % (version, '/'.join(self.tree), format)
 
         conn.request(resource['method'], path, urllib.urlencode(kwargs), {
             'User-Agent': 'disqus-python/%s' % __version__
@@ -78,7 +77,7 @@ class Resource(object):
 
         response = conn.getresponse()
         # Let's coerce it to Python
-        data = api.formats[kwargs['format']](response.read())
+        data = api.formats[format](response.read())
 
         if response.status != 200:
             raise APIError(data['code'], data['response'])
