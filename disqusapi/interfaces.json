@@ -1,0 +1,184 @@
+{
+    "blacklists": {
+        "add": {
+            "method": "POST",
+            "required": ["type" "value"]
+        },
+        "list": {
+            "method": "GET"
+        },
+        "remove": {
+            "method": "POST",
+            "required": ["type" "value"]
+        }
+    },
+    "categories": {
+        "details": {
+            "method": "GET",
+            "required": ["category"]
+        },
+        "listPosts": {
+            "method": "GET",
+            "required": ["category"]
+        },
+        "listThreads": {
+            "method": "GET",
+            "required": ["category"]
+        }
+    },
+    "forums": {
+        "details": {
+            "method": "GET",
+            "required": ["forum"]
+        },
+        "listCategories": {
+            "method": "GET",
+            "required": ["forum"]
+        },
+        "listPosts": {
+            "method": "GET",
+            "required": ["forum"]
+        },
+        "listThreads": {
+            "method": "GET",
+            "required": ["forum"]
+        },
+        "listUsers": {
+            "method": "GET",
+            "required": ["forum"]
+        }
+    },
+    "posts": {
+        "approve": {
+            "method": "POST",
+            "required": ["post"]
+        },
+        "create": {
+            "method": "POST",
+            "required": ["thread" "message"]
+        },
+        "details": {
+            "method": "GET",
+            "required": ["post"]
+        },
+        "list": {
+            "method": "GET"
+        },
+        "listPopular": {
+            "method": "GET"
+        },
+        "remove": {
+            "method": "POST",
+            "required": ["post"]
+        },
+        "report": {
+            "method": "POST",
+            "required": ["post"]
+        },
+        "restore": {
+            "method": "POST",
+            "required": ["post"]
+        },
+        "spam": {
+            "method": "POST",
+            "required": ["post"]
+        },
+        "update": {
+            "method": "POST",
+            "required": ["post"]
+        },
+        "vote": {
+            "method": "POST",
+            "required": ["post" "vote"]
+        }
+    },
+    "reactions": {
+        "details": {
+            "method": "GET",
+            "required": ["reaction"]
+        },
+        "list": {
+            "method": "GET"
+        }
+    },
+    "reports": {
+        "domains": {
+            "method": "GET"
+        },
+        "ips": {
+            "method": "GET"
+        },
+        "threads": {
+            "method": "GET"
+        },
+        "users": {
+            "method": "GET"
+        }
+    },
+    "threads": {
+        "close": {
+            "method": "POST",
+            "required": ["thread"]
+        },
+        "details": {
+            "method": "GET",
+            "required": ["thread"]
+        },
+        "list": {
+            "method": "GET"
+        },
+        "listHot": {
+            "method": "GET"
+        },
+        "listPopular": {
+            "method": "GET"
+        },
+        "listPosts": {
+            "method": "GET"
+        },
+        "open": {
+            "method": "POST",
+            "required": ["thread"],
+        },
+        "vote": {
+            "method": "POST",
+            "required": ["thread" "vote"],
+        }
+    },
+    "threads": {
+        "listThreads": {
+            "method": "GET"
+        }
+    },
+    "users": {
+        "details": {
+            "method": "GET"
+        },
+        "listActiveForums": {
+            "method": "GET"
+        },
+        "listActivity": {
+            "method": "GET"
+        },
+        "listFollowers": {
+            "method": "GET"
+        },
+        "listFollowing": {
+            "method": "GET"
+        },
+        "listForums": {
+            "method": "GET"
+        }
+    },
+    "whitelists": {
+        "add": {
+            "method": "POST"
+        },
+        "list": {
+            "method": "GET"
+        },
+        "remove": {
+            "method": "POST"
+        }
+    }
+}
