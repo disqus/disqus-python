@@ -2,14 +2,14 @@
     "blacklists": {
         "add": {
             "method": "POST",
-            "required": ["type" "value"]
+            "required": ["type", "value"]
         },
         "list": {
             "method": "GET"
         },
         "remove": {
             "method": "POST",
-            "required": ["type" "value"]
+            "required": ["type", "value"]
         }
     },
     "categories": {
@@ -55,7 +55,7 @@
         },
         "create": {
             "method": "POST",
-            "required": ["thread" "message"]
+            "required": ["thread", "message"]
         },
         "details": {
             "method": "GET",
@@ -89,7 +89,7 @@
         },
         "vote": {
             "method": "POST",
-            "required": ["post" "vote"]
+            "required": ["post", "vote"]
         }
     },
     "reactions": {
@@ -138,11 +138,11 @@
         },
         "open": {
             "method": "POST",
-            "required": ["thread"],
+            "required": ["thread"]
         },
         "vote": {
             "method": "POST",
-            "required": ["thread" "vote"],
+            "required": ["thread", "vote"]
         }
     },
     "threads": {
