@@ -35,10 +35,10 @@ class Resource(object):
     def __init__(self, api, interface=INTERFACES, node=None, tree=()):
         self.api = api
         self.node = node
+        self.interface = interface
         if node:
             tree = tree + (node,)
         self.tree = tree
-        self.interface = interface
 
     def __getattr__(self, attr):
         if attr in getattr(self, '__dict__'):
@@ -91,7 +91,7 @@ class DisqusAPI(Resource):
     }
 
     def __init__(self, key=None, format='json', version='3.0', is_secure=False):
-        self.key = api_secret
+        self.key = key
         self.format = format
         self.version = version
         self.is_secure = is_secure
