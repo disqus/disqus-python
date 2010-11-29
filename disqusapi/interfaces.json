@@ -145,7 +145,7 @@
             "required": ["thread", "vote"]
         }
     },
-    "threads": {
+    "trends": {
         "listThreads": {
             "method": "GET"
         }
