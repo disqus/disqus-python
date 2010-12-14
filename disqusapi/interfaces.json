@@ -1,184 +1,345 @@
 {
-    "blacklists": {
-        "add": {
-            "method": "POST",
-            "required": ["type", "value"]
-        },
-        "list": {
-            "method": "GET"
-        },
-        "remove": {
-            "method": "POST",
-            "required": ["type", "value"]
-        }
-    },
-    "categories": {
-        "details": {
-            "method": "GET",
-            "required": ["category"]
-        },
-        "listPosts": {
-            "method": "GET",
-            "required": ["category"]
-        },
-        "listThreads": {
-            "method": "GET",
-            "required": ["category"]
-        }
-    },
-    "forums": {
-        "details": {
-            "method": "GET",
-            "required": ["forum"]
-        },
-        "listCategories": {
-            "method": "GET",
-            "required": ["forum"]
-        },
-        "listPosts": {
-            "method": "GET",
-            "required": ["forum"]
-        },
-        "listThreads": {
-            "method": "GET",
-            "required": ["forum"]
-        },
-        "listUsers": {
-            "method": "GET",
-            "required": ["forum"]
-        }
-    },
-    "posts": {
-        "approve": {
-            "method": "POST",
-            "required": ["post"]
-        },
-        "create": {
-            "method": "POST",
-            "required": ["thread", "message"]
-        },
-        "details": {
-            "method": "GET",
-            "required": ["post"]
-        },
-        "list": {
-            "method": "GET"
-        },
-        "listPopular": {
-            "method": "GET"
-        },
-        "remove": {
-            "method": "POST",
-            "required": ["post"]
-        },
-        "report": {
-            "method": "POST",
-            "required": ["post"]
-        },
-        "restore": {
-            "method": "POST",
-            "required": ["post"]
-        },
-        "spam": {
-            "method": "POST",
-            "required": ["post"]
-        },
-        "update": {
-            "method": "POST",
-            "required": ["post"]
-        },
-        "vote": {
-            "method": "POST",
-            "required": ["post", "vote"]
-        }
-    },
-    "reactions": {
-        "details": {
-            "method": "GET",
-            "required": ["reaction"]
-        },
-        "list": {
-            "method": "GET"
-        }
-    },
-    "reports": {
-        "domains": {
-            "method": "GET"
-        },
-        "ips": {
-            "method": "GET"
-        },
-        "threads": {
-            "method": "GET"
-        },
-        "users": {
-            "method": "GET"
-        }
-    },
-    "threads": {
-        "close": {
-            "method": "POST",
-            "required": ["thread"]
-        },
-        "details": {
-            "method": "GET",
-            "required": ["thread"]
-        },
-        "list": {
-            "method": "GET"
-        },
-        "listHot": {
-            "method": "GET"
-        },
-        "listPopular": {
-            "method": "GET"
-        },
-        "listPosts": {
-            "method": "GET"
-        },
-        "open": {
-            "method": "POST",
-            "required": ["thread"]
-        },
-        "vote": {
-            "method": "POST",
-            "required": ["thread", "vote"]
-        }
-    },
-    "trends": {
-        "listThreads": {
-            "method": "GET"
-        }
-    },
-    "users": {
-        "details": {
-            "method": "GET"
-        },
-        "listActiveForums": {
-            "method": "GET"
-        },
-        "listActivity": {
-            "method": "GET"
-        },
-        "listFollowers": {
-            "method": "GET"
-        },
-        "listFollowing": {
-            "method": "GET"
-        },
-        "listForums": {
-            "method": "GET"
-        }
-    },
-    "whitelists": {
-        "add": {
-            "method": "POST"
-        },
-        "list": {
-            "method": "GET"
-        },
-        "remove": {
-            "method": "POST"
-        }
+  "reactions": {
+    "list": {
+      "required": [
+        "forum"
+      ], 
+      "method": "POST"
+    }, 
+    "details": {
+      "required": [
+        "reaction"
+      ], 
+      "method": "GET"
     }
+  }, 
+  "exports": {
+    "exportForum": {
+      "required": [
+        "forum"
+      ], 
+      "method": "POST"
+    }
+  }, 
+  "users": {
+    "listActiveForums": {
+      "required": [], 
+      "method": "GET"
+    }, 
+    "listFollowing": {
+      "required": [], 
+      "method": "GET"
+    }, 
+    "listForums": {
+      "required": [], 
+      "method": "GET"
+    }, 
+    "details": {
+      "required": [], 
+      "method": "GET"
+    }, 
+    "listFollowers": {
+      "required": [], 
+      "method": "GET"
+    }, 
+    "listActivity": {
+      "required": [], 
+      "method": "GET"
+    }, 
+    "listMostActiveForums": {
+      "required": [], 
+      "method": "GET"
+    }
+  }, 
+  "imports": {
+    "list": {
+      "required": [
+        "forum"
+      ], 
+      "method": "GET"
+    }, 
+    "details": {
+      "required": [
+        "group"
+      ], 
+      "method": "GET"
+    }
+  }, 
+  "posts": {
+    "restore": {
+      "required": [
+        "post"
+      ], 
+      "method": "POST"
+    }, 
+    "search": {
+      "required": [
+        "query"
+      ], 
+      "method": "GET"
+    }, 
+    "spam": {
+      "required": [
+        "post"
+      ], 
+      "method": "POST"
+    }, 
+    "approve": {
+      "required": [
+        "post"
+      ], 
+      "method": "POST"
+    }, 
+    "create": {
+      "required": [
+        "message"
+      ], 
+      "method": "POST"
+    }, 
+    "list": {
+      "required": [], 
+      "method": "GET"
+    }, 
+    "remove": {
+      "required": [
+        "post"
+      ], 
+      "method": "POST"
+    }, 
+    "vote": {
+      "required": [
+        "vote", 
+        "post"
+      ], 
+      "method": "POST"
+    }, 
+    "details": {
+      "required": [
+        "post"
+      ], 
+      "method": "GET"
+    }, 
+    "report": {
+      "required": [
+        "post"
+      ], 
+      "method": "POST"
+    }, 
+    "listPopular": {
+      "required": [], 
+      "method": "GET"
+    }
+  }, 
+  "blacklists": {
+    "add": {
+      "required": [
+        "value", 
+        "type"
+      ], 
+      "method": "POST"
+    }, 
+    "list": {
+      "required": [], 
+      "method": "GET"
+    }, 
+    "remove": {
+      "required": [
+        "type", 
+        "value"
+      ], 
+      "method": "POST"
+    }
+  }, 
+  "reports": {
+    "domains": {
+      "required": [], 
+      "method": "GET"
+    }, 
+    "ips": {
+      "required": [], 
+      "method": "GET"
+    }, 
+    "threads": {
+      "required": [], 
+      "method": "GET"
+    }, 
+    "users": {
+      "required": [], 
+      "method": "GET"
+    }
+  }, 
+  "whitelists": {
+    "add": {
+      "required": [
+        "type", 
+        "value", 
+        "forum"
+      ], 
+      "method": "POST"
+    }, 
+    "list": {
+      "required": [
+        "forum"
+      ], 
+      "method": "GET"
+    }, 
+    "remove": {
+      "required": [
+        "type", 
+        "value", 
+        "forum"
+      ], 
+      "method": "POST"
+    }
+  }, 
+  "applications": {
+    "listUsage": {
+      "required": [], 
+      "method": "GET"
+    }
+  }, 
+  "trends": {
+    "listThreads": {
+      "required": [], 
+      "method": "GET"
+    }
+  }, 
+  "threads": {
+    "restore": {
+      "required": [
+        "thread"
+      ], 
+      "method": "POST"
+    }, 
+    "vote": {
+      "required": [
+        "vote", 
+        "thread"
+      ], 
+      "method": "POST"
+    }, 
+    "open": {
+      "required": [
+        "thread"
+      ], 
+      "method": "POST"
+    }, 
+    "create": {
+      "required": [
+        "forum", 
+        "title"
+      ], 
+      "method": "POST"
+    }, 
+    "list": {
+      "required": [], 
+      "method": "GET"
+    }, 
+    "listMostLiked": {
+      "required": [], 
+      "method": "GET"
+    }, 
+    "listHot": {
+      "required": [], 
+      "method": "GET"
+    }, 
+    "update": {
+      "required": [
+        "thread"
+      ], 
+      "method": "POST"
+    }, 
+    "listSimilar": {
+      "required": [
+        "thread"
+      ], 
+      "method": "GET"
+    }, 
+    "details": {
+      "required": [
+        "thread"
+      ], 
+      "method": "GET"
+    }, 
+    "remove": {
+      "required": [
+        "thread"
+      ], 
+      "method": "POST"
+    }, 
+    "listPosts": {
+      "required": [
+        "thread"
+      ], 
+      "method": "GET"
+    }, 
+    "close": {
+      "required": [
+        "thread"
+      ], 
+      "method": "POST"
+    }, 
+    "listPopular": {
+      "required": [], 
+      "method": "GET"
+    }
+  }, 
+  "forums": {
+    "listCategories": {
+      "required": [
+        "forum"
+      ], 
+      "method": "GET"
+    }, 
+    "listThreads": {
+      "required": [
+        "forum"
+      ], 
+      "method": "GET"
+    }, 
+    "listUsers": {
+      "required": [
+        "forum"
+      ], 
+      "method": "GET"
+    }, 
+    "listMostLikedUsers": {
+      "required": [
+        "forum"
+      ], 
+      "method": "GET"
+    }, 
+    "details": {
+      "required": [
+        "forum"
+      ], 
+      "method": "GET"
+    }, 
+    "listPosts": {
+      "required": [
+        "forum"
+      ], 
+      "method": "GET"
+    }
+  }, 
+  "categories": {
+    "listPosts": {
+      "required": [
+        "category"
+      ], 
+      "method": "GET"
+    }, 
+    "listThreads": {
+      "required": [
+        "category"
+      ], 
+      "method": "GET"
+    }, 
+    "details": {
+      "required": [
+        "category"
+      ], 
+      "method": "GET"
+    }
+  }
 }
