@@ -71,7 +71,13 @@ class Resource(object):
 
         path = '/api/%s/%s.%s' % (version, '/'.join(self.tree), format)
 
-        conn.request(resource['method'], path, urllib.urlencode(kwargs), {
+        if resource['method'] == 'GET':
+            path = '%s?%s' % (path, urllib.urlencode(kwargs))
+            data = {}
+        else:
+            data = urllib.urlencode(kwargs)
+
+        conn.request(resource['method'], path, data, {
             'User-Agent': 'disqus-python/%s' % __version__
         })
 
