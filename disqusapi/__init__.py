@@ -71,11 +71,21 @@ class Resource(object):
 
         path = '/api/%s/%s.%s' % (version, '/'.join(self.tree), format)
 
+        # We need to ensure this is a list so that
+        # multiple values for a key work
+        qs = []
+        for k, v in kwargs.iteritems():
+            if isinstance(v, (list, tuple)):
+                for val in v:
+                    qs.append((k, val))
+            else:
+                qs.append((k, v))
+
         if resource['method'] == 'GET':
-            path = '%s?%s' % (path, urllib.urlencode(kwargs))
+            path = '%s?%s' % (path, urllib.urlencode(qs))
             data = {}
         else:
-            data = urllib.urlencode(kwargs)
+            data = urllib.urlencode(qs)
 
         conn.request(resource['method'], path, data, {
             'User-Agent': 'disqus-python/%s' % __version__
