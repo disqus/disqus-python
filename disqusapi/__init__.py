@@ -83,7 +83,7 @@ class Resource(object):
 
         if resource['method'] == 'GET':
             path = '%s?%s' % (path, urllib.urlencode(qs))
-            data = {}
+            data = ""
         else:
             data = urllib.urlencode(qs)
 
