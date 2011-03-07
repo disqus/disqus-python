@@ -16,7 +16,7 @@ Parameters (including the ability to override version, api_secret, and format) a
 
 	disqus.posts.details(post=1, version='3.0')
 
-Paginating through endpoints is easy as well:
+Paginating through endpoints is easy as well::
 
 	from disqusapi import Paginator
 	paginator = Paginator(api.trends.listThreads, forum='disqus')
