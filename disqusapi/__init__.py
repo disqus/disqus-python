@@ -22,6 +22,46 @@ INTERFACES = simplejson.loads(open(os.path.join(os.path.dirname(__file__), 'inte
 HOST = 'disqus.com'
 SSL_HOST = 'secure.disqus.com'
 
+class Paginator(object):
+    """
+    Paginate through all entries:
+    
+    >>> paginator = Paginator(api.trends.listThreads, forum='disqus')
+    >>> for result in paginator:
+    >>>     print result
+    
+    Paginate only up to a number of entries:
+    
+    >>> for result in paginator(limit=500):
+    >>>     print result
+    """
+    
+    def __init__(self, endpoint, **params):
+        self.endpoint = endpoint
+        self.params = params
+    
+    def __iter__(self):
+        for result in self():
+            yield result
+    
+    def __call__(self, limit=None):
+        params = self.params.copy()
+        num = 0
+        more = True
+        results = self.endpoint(**params)
+        while more and (not limit or num < limit):
+            for result in results:
+                if limit and num >= limit:
+                    break
+                num += 1
+                yield result
+
+            if results.cursor:
+                more = results.cursor['more']
+                params['cursor'] = results.cursor['id']
+            else:
+                more = False
+
 class InterfaceNotDefined(NotImplementedError): pass
 class APIError(Exception):
     def __init__(self, code, message):
@@ -31,6 +71,30 @@ class APIError(Exception):
     def __str__(self):
         return '%s: %s' % (self.code, self.message)
 
+class Result(object):
+    def __init__(self, response, cursor=None):
+        self.response = response
+        self.cursor = cursor or {}
+
+    def __repr__(self):
+        return '<%s: %s>' % (self.__class__.__name__, repr(self.response))
+    
+    def __iter__(self):
+        for r in self.response:
+            yield r
+    
+    def __len__(self):
+        return len(self.response)
+    
+    def __getslice__(self, i, j):
+        return list.__getslice__(self.response, i, j)
+    
+    def __getitem__(self, key):
+        return list.__getitem__(self.response, key)
+
+    def __contains__(self, key):
+        return list.__contains__(self.response, key)
+    
 class Resource(object):
     def __init__(self, api, interface=INTERFACES, node=None, tree=()):
         self.api = api
@@ -98,7 +162,7 @@ class Resource(object):
         if response.status != 200:
             raise APIError(data['code'], data['response'])
 
-        return data['response']
+        return Result(data['response'], data.get('cursor'))
 
 class DisqusAPI(Resource):
     formats = {
