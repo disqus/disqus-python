@@ -161,8 +161,10 @@ class Resource(object):
 
         if response.status != 200:
             raise APIError(data['code'], data['response'])
-
-        return Result(data['response'], data.get('cursor'))
+        
+        if isinstance(data['response'], list):
+            return Result(data['response'], data.get('cursor'))
+        return data['response']
 
 class DisqusAPI(Resource):
     formats = {
