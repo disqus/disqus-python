@@ -1,5 +1,15 @@
 {
   "reactions": {
+    "restore": {
+      "required": [
+        "reaction"
+      ], 
+      "method": "POST", 
+      "formats": [
+        "json", 
+        "jsonp"
+      ]
+    }, 
     "list": {
       "required": [
         "forum"
@@ -15,6 +25,16 @@
         "reaction"
       ], 
       "method": "GET", 
+      "formats": [
+        "json", 
+        "jsonp"
+      ]
+    }, 
+    "remove": {
+      "required": [
+        "reaction"
+      ], 
+      "method": "POST", 
       "formats": [
         "json", 
         "jsonp"
@@ -42,6 +62,15 @@
         "jsonp"
       ]
     }, 
+    "listActiveThreads": {
+      "required": [], 
+      "method": "GET", 
+      "formats": [
+        "json", 
+        "jsonp", 
+        "rss"
+      ]
+    }, 
     "listFollowing": {
       "required": [], 
       "method": "GET", 
@@ -64,6 +93,15 @@
       "formats": [
         "json", 
         "jsonp"
+      ]
+    }, 
+    "listPosts": {
+      "required": [], 
+      "method": "GET", 
+      "formats": [
+        "json", 
+        "jsonp", 
+        "rss"
       ]
     }, 
     "details": {
@@ -140,18 +178,17 @@
         "jsonp"
       ]
     }, 
-    "search": {
+    "spam": {
       "required": [
-        "query"
+        "post"
       ], 
-      "method": "GET", 
+      "method": "POST", 
       "formats": [
         "json", 
-        "jsonp", 
-        "rss"
+        "jsonp"
       ]
     }, 
-    "spam": {
+    "unhighlight": {
       "required": [
         "post"
       ], 
@@ -222,6 +259,16 @@
       ]
     }, 
     "report": {
+      "required": [
+        "post"
+      ], 
+      "method": "POST", 
+      "formats": [
+        "json", 
+        "jsonp"
+      ]
+    }, 
+    "highlight": {
       "required": [
         "post"
       ], 
@@ -382,6 +429,16 @@
         "jsonp"
       ]
     }, 
+    "open": {
+      "required": [
+        "thread"
+      ], 
+      "method": "POST", 
+      "formats": [
+        "json", 
+        "jsonp"
+      ]
+    }, 
     "create": {
       "required": [
         "forum", 
@@ -491,18 +548,29 @@
         "jsonp"
       ]
     }, 
-    "open": {
-      "required": [
-        "thread"
-      ], 
-      "method": "POST", 
+    "listPopular": {
+      "required": [], 
+      "method": "GET", 
       "formats": [
         "json", 
-        "jsonp"
+        "jsonp", 
+        "rss"
       ]
     }
   }, 
   "forums": {
+    "create": {
+      "required": [
+        "website", 
+        "name", 
+        "short_name"
+      ], 
+      "method": "GET", 
+      "formats": [
+        "json", 
+        "jsonp"
+      ]
+    }, 
     "listCategories": {
       "required": [
         "forum"
@@ -587,6 +655,17 @@
         "json", 
         "jsonp", 
         "rss"
+      ]
+    }, 
+    "create": {
+      "required": [
+        "forum", 
+        "title"
+      ], 
+      "method": "POST", 
+      "formats": [
+        "json", 
+        "jsonp"
       ]
     }, 
     "list": {
