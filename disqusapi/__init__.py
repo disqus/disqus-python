@@ -48,8 +48,8 @@ class Paginator(object):
         params = self.params.copy()
         num = 0
         more = True
-        results = self.endpoint(**params)
         while more and (not limit or num < limit):
+            results = self.endpoint(**params)
             for result in results:
                 if limit and num >= limit:
                     break
