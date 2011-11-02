@@ -91,7 +91,9 @@
       ]
     },
     "unfollow": {
-      "required": [],
+      "required": [
+        "target"
+      ],
       "method": "POST",
       "formats": [
         "json",
@@ -124,7 +126,9 @@
       ]
     },
     "follow": {
-      "required": [],
+      "required": [
+        "target"
+      ],
       "method": "POST",
       "formats": [
         "json",
@@ -161,7 +165,8 @@
     },
     "details": {
       "required": [
-        "group"
+        "group",
+        "forum"
       ],
       "method": "GET",
       "formats": [
@@ -473,13 +478,14 @@
         "rss"
       ]
     },
-    "listMostLiked": {
-      "required": [],
-      "method": "GET",
+    "remove": {
+      "required": [
+        "thread"
+      ],
+      "method": "POST",
       "formats": [
         "json",
-        "jsonp",
-        "rss"
+        "jsonp"
       ]
     },
     "listHot": {
@@ -522,15 +528,6 @@
         "jsonp"
       ]
     },
-    "listByDate": {
-      "required": [],
-      "method": "GET",
-      "formats": [
-        "json",
-        "jsonp",
-        "rss"
-      ]
-    },
     "listPosts": {
       "required": [
         "thread"
@@ -543,16 +540,6 @@
       ]
     },
     "close": {
-      "required": [
-        "thread"
-      ],
-      "method": "POST",
-      "formats": [
-        "json",
-        "jsonp"
-      ]
-    },
-    "remove": {
       "required": [
         "thread"
       ],
