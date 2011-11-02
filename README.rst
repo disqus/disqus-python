@@ -8,7 +8,7 @@ Let's start with installing the API:
 Use the API by instantiating it, and then calling the method through dotted notation chaining::
 
 	from disqusapi import DisqusAPI
-	disqus = DisqusAPI(secret_key)
+	disqus = DisqusAPI(secret_key, public_key)
 	for result in disqus.trends.listThreads():
 	    print result
 
@@ -22,7 +22,7 @@ Paginating through endpoints is easy as well::
 	paginator = Paginator(api.trends.listThreads, forum='disqus')
 	for result in paginator:
 	    print result
-	
+
 	# pull in a maximum of 500 results (this limit param differs from the endpoint's limit param)
 	for result in paginator(limit=500):
 	    print result
