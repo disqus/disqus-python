@@ -96,10 +96,10 @@ class Resource(object):
         format = kwargs.pop('format', api.format)
 
         if api.is_secure:
-            host = SSL_HOST
+            host = 'https://%s' % SSL_HOST
             conn = httplib.HTTPSConnection(SSL_HOST)
         else:
-            host = HOST
+            host = 'http://%s' % HOST
             conn = httplib.HTTPConnection(HOST)
 
         path = '/api/%s/%s.%s' % (version, '/'.join(self.tree), format)
@@ -127,7 +127,7 @@ class Resource(object):
         if public_key:
             # If we have both public and secret keys we can safely sign the request
             # (which also happens to enable oauth access tokens)
-            nonce = '%s:%s' (time.time(), uuid.uuid4().hex)
+            nonce = '%s:%s' % (time.time(), uuid.uuid4().hex)
             body_hash = get_body_hash(params)
             data = get_normalized_request_string(resource['method'], url, nonce, params, body_hash=body_hash)
             signature = get_mac_signature(kwargs.pop('secret_key', api.secret_key), data)
@@ -147,8 +147,10 @@ class Resource(object):
 
             if resource['method'] == 'GET':
                 data = ''
+            else:
+                data = urllib.urlencode(data)
 
-        conn.request(resource['method'], path, urllib.urlencode(data), headers)
+        conn.request(resource['method'], path, data, headers)
 
         response = conn.getresponse()
         # Let's coerce it to Python
