@@ -15,52 +15,20 @@ except:
 import httplib
 import os.path
 import simplejson
+import time
 import urllib
+import uuid
+import warnings
+
+from disqusapi.paginator import Paginator
+from disqusapi.utils import get_normalized_request_string, get_mac_signature, get_body_hash
+
+__all__ = ['DisqusAPI', 'Paginator']
 
 INTERFACES = simplejson.loads(open(os.path.join(os.path.dirname(__file__), 'interfaces.json'), 'r').read())
 
 HOST = 'disqus.com'
 SSL_HOST = 'secure.disqus.com'
-
-class Paginator(object):
-    """
-    Paginate through all entries:
-    
-    >>> paginator = Paginator(api.trends.listThreads, forum='disqus')
-    >>> for result in paginator:
-    >>>     print result
-    
-    Paginate only up to a number of entries:
-    
-    >>> for result in paginator(limit=500):
-    >>>     print result
-    """
-    
-    def __init__(self, endpoint, **params):
-        self.endpoint = endpoint
-        self.params = params
-    
-    def __iter__(self):
-        for result in self():
-            yield result
-    
-    def __call__(self, limit=None):
-        params = self.params.copy()
-        num = 0
-        more = True
-        while more and (not limit or num < limit):
-            results = self.endpoint(**params)
-            for result in results:
-                if limit and num >= limit:
-                    break
-                num += 1
-                yield result
-
-            if results.cursor:
-                more = results.cursor['more']
-                params['cursor'] = results.cursor['id']
-            else:
-                more = False
 
 class InterfaceNotDefined(NotImplementedError): pass
 class APIError(Exception):
@@ -78,23 +46,23 @@ class Result(object):
 
     def __repr__(self):
         return '<%s: %s>' % (self.__class__.__name__, repr(self.response))
-    
+
     def __iter__(self):
         for r in self.response:
             yield r
-    
+
     def __len__(self):
         return len(self.response)
-    
+
     def __getslice__(self, i, j):
         return list.__getslice__(self.response, i, j)
-    
+
     def __getitem__(self, key):
         return list.__getitem__(self.response, key)
 
     def __contains__(self, key):
         return list.__contains__(self.response, key)
-    
+
 class Resource(object):
     def __init__(self, api, interface=INTERFACES, node=None, tree=()):
         self.api = api
@@ -113,8 +81,10 @@ class Resource(object):
         return Resource(self.api, interface[attr], attr, self.tree)
 
     def __call__(self, **kwargs):
-        # Handle undefined interfaces
+        return self._request(**kwargs)
 
+    def _request(self, **kwargs):
+        # Handle undefined interfaces
         resource = self.interface
         for k in resource.get('required', []):
             if not kwargs.get(k):
@@ -122,38 +92,63 @@ class Resource(object):
 
         api = self.api
 
-        if 'api_secret' not in kwargs:
-            kwargs['api_secret'] = api.key
-
         version = kwargs.pop('version', api.version)
         format = kwargs.pop('format', api.format)
 
         if api.is_secure:
+            host = SSL_HOST
             conn = httplib.HTTPSConnection(SSL_HOST)
         else:
+            host = HOST
             conn = httplib.HTTPConnection(HOST)
 
         path = '/api/%s/%s.%s' % (version, '/'.join(self.tree), format)
+        url = '%s%s' % (host, path)
 
         # We need to ensure this is a list so that
         # multiple values for a key work
-        qs = []
+        params = []
         for k, v in kwargs.iteritems():
             if isinstance(v, (list, tuple)):
                 for val in v:
-                    qs.append((k, val))
+                    params.append((k, val))
             else:
-                qs.append((k, v))
+                params.append((k, v))
 
         if resource['method'] == 'GET':
-            path = '%s?%s' % (path, urllib.urlencode(qs))
-            data = ""
-        else:
-            data = urllib.urlencode(qs)
+            path = '%s?%s' % (path, urllib.urlencode(params))
 
-        conn.request(resource['method'], path, data, {
+        headers = {
             'User-Agent': 'disqus-python/%s' % __version__
-        })
+        }
+
+        public_key = kwargs.pop('public_key', api.public_key)
+
+        if public_key:
+            # If we have both public and secret keys we can safely sign the request
+            # (which also happens to enable oauth access tokens)
+            nonce = '%s:%s' (time.time(), uuid.uuid4().hex)
+            body_hash = get_body_hash(params)
+            data = get_normalized_request_string(resource['method'], url, nonce, params, body_hash=body_hash)
+            signature = get_mac_signature(kwargs.pop('secret_key', api.secret_key), data)
+            auth_params = [
+                ('id', public_key),
+                ('nonce', nonce),
+                ('body-hash', body_hash),
+                ('mac', signature),
+            ]
+            access_token = kwargs.pop('access_token', None)
+            if access_token:
+                auth_params.append(('access_token', access_token))
+            headers['Authorization'] = 'MAC %s' % ', '.join('%s="%s"' % (k, v) for k, v in auth_params)
+        else:
+            if 'api_secret' not in kwargs:
+                kwargs['api_secret'] = api.secret_key
+
+            if resource['method'] == 'GET':
+                data = ''
+
+        conn.request(resource['method'], path, urllib.urlencode(data), headers)
 
         response = conn.getresponse()
         # Let's coerce it to Python
@@ -161,7 +156,7 @@ class Resource(object):
 
         if response.status != 200:
             raise APIError(data['code'], data['response'])
-        
+
         if isinstance(data['response'], list):
             return Result(data['response'], data.get('cursor'))
         return data['response']
@@ -171,21 +166,29 @@ class DisqusAPI(Resource):
         'json': lambda x: simplejson.loads(x),
     }
 
-    def __init__(self, key=None, format='json', version='3.0', is_secure=False):
-        self.key = key
+    def __init__(self, secret_key=None, public_key=None, format='json', version='3.0', is_secure=False):
+        self.secret_key = secret_key
+        self.public_key = public_key
+        if not public_key:
+            warnings.warn('You should use ``public_key`` in addition to your secret key for signing requests.')
         self.format = format
         self.version = version
         self.is_secure = is_secure
         super(DisqusAPI, self).__init__(self)
 
-    def __call__(self, **kwargs):
+    def _request(self, **kwargs):
         raise SyntaxError('You cannot call the API without a resource.')
 
-    def setPublicKey(self, key):
-        raise NotImplementedError('You cannot use the public API key server-side.')
+    def _get_key(self):
+        return self.secret_key
+    key = property(_get_key)
 
-    def setKey(self, key):
-        self.key = key
+    def setSecretKey(self, key):
+        self.secret_key = key
+    setKey = setSecretKey
+
+    def setPublicKey(self, key):
+        self.public_key = key
 
     def setFormat(self, format):
         self.format = format
