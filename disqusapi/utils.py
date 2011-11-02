@@ -13,13 +13,15 @@ def get_normalized_params(params):
 
 def get_normalized_request_string(method, url, nonce, params, ext='', body_hash=None):
     """
-    Returns a normalized request string as described in OAuth2 MAC spec.
+    Returns a normalized request string as described iN OAuth2 MAC spec.
 
     http://tools.ietf.org/html/draft-ietf-oauth-v2-http-mac-00#section-3.3.1
     """
     urlparts = urlparse.urlparse(url)
     if urlparts.query:
         norm_url = '%s?%s' % (urlparts.path, urlparts.query)
+    elif params and method == 'GET':
+        norm_url = '%s?%s' % (urlparts.path, get_normalized_params(params))
     else:
         norm_url = urlparts.path
 

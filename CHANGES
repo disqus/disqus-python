@@ -1,3 +1,7 @@
+0.3.1
+
+* Fixed an issue with GET requests and the normalized request string.
+
 0.3.0
 
 * Added signed requests (you must pass public_key to DisqusAPI).
