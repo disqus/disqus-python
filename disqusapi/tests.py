@@ -93,29 +93,29 @@ class DisqusAPITest(unittest.TestCase):
                 result = api.posts.list(forum='disqus')
 
             args, kwargs = request.call_args
-            self.assertEquals(args[0], 'GET')
-            self.assertEquals(args[1], '/api/3.0/posts/list.json?forum=disqus')
-            body = args[2].split('\n')
-            self.assertEquals(len(body), 8) # 6 parts to a signed body
-            timestamp, nonce = body[0].split(':')
-            self.assertTrue(len(nonce) <= 32)
-            self.assertEquals(body[1], 'GET')
-            self.assertEquals(body[2], '/api/3.0/posts/list.json')
-            self.assertEquals(body[3], 'disqus.com')
-            self.assertEquals(body[4], '80')
-            self.assertEquals(body[5], 'ytsXfVhvWMMkPyBsMPkn6DYXRqc=')
-            self.assertEquals(body[6], '') # ext
-            self.assertEquals(body[7], '') # always empty
-            headers = args[3]
-            signature = get_mac_signature(self.API_SECRET, args[2])
-            self.assertTrue('Authorization' in headers)
-            auth_header = 'MAC id="%s", nonce="%s:%s", body-hash="ytsXfVhvWMMkPyBsMPkn6DYXRqc=", mac="%s"' % (
-                self.API_PUBLIC,
-                timestamp,
-                nonce,
-                signature,
-            )
-            self.assertEquals(headers['Authorization'], auth_header)
+        self.assertEquals(args[0], 'GET')
+        self.assertEquals(args[1], '/api/3.0/posts/list.json?forum=disqus')
+        body = args[2].split('\n')
+        self.assertEquals(len(body), 8) # 6 parts to a signed body
+        timestamp, nonce = body[0].split(':')
+        self.assertTrue(len(nonce) <= 32)
+        self.assertEquals(body[1], 'GET')
+        self.assertEquals(body[2], '/api/3.0/posts/list.json')
+        self.assertEquals(body[3], 'disqus.com')
+        self.assertEquals(body[4], '80')
+        self.assertEquals(body[5], 'ytsXfVhvWMMkPyBsMPkn6DYXRqc=')
+        self.assertEquals(body[6], '') # ext
+        self.assertEquals(body[7], '') # always empty
+        headers = args[3]
+        signature = get_mac_signature(self.API_SECRET, args[2])
+        self.assertTrue('Authorization' in headers)
+        auth_header = 'MAC id="%s", nonce="%s:%s", body-hash="ytsXfVhvWMMkPyBsMPkn6DYXRqc=", mac="%s"' % (
+            self.API_PUBLIC,
+            timestamp,
+            nonce,
+            signature,
+        )
+        self.assertEquals(headers['Authorization'], auth_header)
 
 if __name__ == '__main__':
     unittest.main()
