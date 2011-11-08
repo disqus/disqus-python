@@ -28,7 +28,7 @@ __all__ = ['DisqusAPI', 'Paginator']
 INTERFACES = simplejson.loads(open(os.path.join(os.path.dirname(__file__), 'interfaces.json'), 'r').read())
 
 HOST = 'disqus.com'
-SSL_HOST = 'secure.disqus.com'
+SSL_HOST = HOST
 
 class InterfaceNotDefined(NotImplementedError): pass
 class APIError(Exception):
