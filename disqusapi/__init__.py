@@ -107,6 +107,11 @@ class Resource(object):
 
         path = '/api/%s/%s.%s' % (version, '/'.join(self.tree), format)
 
+        if 'api_secret' not in kwargs:
+            kwargs['api_secret'] = api.secret_key
+        if 'api_public' not in kwargs:
+            kwargs['api_key'] = api.public_key
+
         # We need to ensure this is a list so that
         # multiple values for a key work
         params = []
@@ -117,22 +122,15 @@ class Resource(object):
             else:
                 params.append((k, v))
 
-        if method == 'GET':
-            path = '%s?%s' % (path, urllib.urlencode(params))
-
         headers = {
             'User-Agent': 'disqus-python/%s' % __version__
         }
 
-        public_key = kwargs.pop('public_key', api.public_key)
-
-        if 'api_secret' not in kwargs:
-            kwargs['api_secret'] = api.secret_key
-
         if method == 'GET':
+            path = '%s?%s' % (path, urllib.urlencode(params))
             data = ''
         else:
-            data = urllib.urlencode(data)
+            data = urllib.urlencode(params)
 
         conn.request(method, path, data, headers)
 
