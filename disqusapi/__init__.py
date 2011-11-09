@@ -77,7 +77,8 @@ class Resource(object):
             return getattr(self, attr)
         interface = self.interface
         if attr not in interface:
-            raise InterfaceNotDefined(attr)
+            interface[attr] = {}
+            # raise InterfaceNotDefined(attr)
         return Resource(self.api, interface[attr], attr, self.tree)
 
     def __call__(self, **kwargs):
@@ -89,6 +90,9 @@ class Resource(object):
         for k in resource.get('required', []):
             if not kwargs.get(k):
                 raise ValueError('Missing required argument: %s' % k)
+
+        if not kwargs.get('method', resource.get('method')):
+            raise InterfaceNotDefined('Interface is not defined, you must pass ``method`` (HTTP Method).')
 
         api = self.api
 
