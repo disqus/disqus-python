@@ -41,6 +41,12 @@ class APIError(Exception):
     def __str__(self):
         return '%s: %s' % (self.code, self.message)
 
+class InvalidAccessToken(APIError): pass
+
+ERROR_MAP = {
+    18: InvalidAccessToken,
+}
+
 class Result(object):
     def __init__(self, response, cursor=None):
         self.response = response
@@ -165,7 +171,7 @@ class Resource(object):
         data = api.formats[format](response.read())
 
         if response.status != 200:
-            raise APIError(data['code'], data['response'])
+            raise ERROR_MAP.get(data['code'], APIError)(data['code'], data['response'])
 
         if isinstance(data['response'], list):
             return Result(data['response'], data.get('cursor'))
