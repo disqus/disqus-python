@@ -15,22 +15,16 @@ except:
 import httplib
 import os.path
 import simplejson
-import time
 import urllib
-import uuid
 import warnings
 
 from disqusapi.paginator import Paginator
-from disqusapi.utils import (get_normalized_params,
-                             get_normalized_request_string, get_mac_signature,
-                             get_body_hash)
 
 __all__ = ['DisqusAPI', 'Paginator']
 
 INTERFACES = simplejson.loads(open(os.path.join(os.path.dirname(__file__), 'interfaces.json'), 'r').read())
 
 HOST = 'disqus.com'
-SSL_HOST = HOST
 
 class InterfaceNotDefined(NotImplementedError): pass
 class APIError(Exception):
@@ -109,19 +103,12 @@ class Resource(object):
         version = kwargs.pop('version', api.version)
         format = kwargs.pop('format', api.format)
 
-        if api.is_secure:
-            host = 'https://%s' % SSL_HOST
-            conn = httplib.HTTPSConnection(SSL_HOST)
-        else:
-            host = 'http://%s' % HOST
-            conn = httplib.HTTPConnection(HOST)
+        conn = httplib.HTTPSConnection(HOST)
 
         path = '/api/%s/%s.%s' % (version, '/'.join(self.tree), format)
-        url = '%s%s' % (host, path)
 
         # We need to ensure this is a list so that
         # multiple values for a key work
-        access_token = kwargs.pop('access_token', None)
         params = []
         for k, v in kwargs.iteritems():
             if isinstance(v, (list, tuple)):
@@ -131,7 +118,7 @@ class Resource(object):
                 params.append((k, v))
 
         if method == 'GET':
-            path = '%s?%s' % (path, get_normalized_params(params))
+            path = '%s?%s' % (path, urllib.urlencode(params))
 
         headers = {
             'User-Agent': 'disqus-python/%s' % __version__
@@ -139,30 +126,13 @@ class Resource(object):
 
         public_key = kwargs.pop('public_key', api.public_key)
 
-        if public_key:
-            # If we have both public and secret keys we can safely sign the request
-            # (which also happens to enable oauth access tokens)
-            nonce = '%s:%s' % (time.time(), uuid.uuid4().hex)
-            body_hash = get_body_hash(params)
-            data = get_normalized_request_string(method, url, nonce, params, body_hash=body_hash)
-            signature = get_mac_signature(kwargs.pop('secret_key', api.secret_key), data)
-            auth_params = [
-                ('id', public_key),
-                ('nonce', nonce),
-                ('body-hash', body_hash),
-                ('mac', signature),
-            ]
-            if access_token:
-                auth_params.append(('access_token', access_token))
-            headers['Authorization'] = 'MAC %s' % ', '.join('%s="%s"' % (k, v) for k, v in auth_params)
-        else:
-            if 'api_secret' not in kwargs:
-                kwargs['api_secret'] = api.secret_key
+        if 'api_secret' not in kwargs:
+            kwargs['api_secret'] = api.secret_key
 
-            if method == 'GET':
-                data = ''
-            else:
-                data = urllib.urlencode(data)
+        if method == 'GET':
+            data = ''
+        else:
+            data = urllib.urlencode(data)
 
         conn.request(method, path, data, headers)
 
@@ -182,14 +152,13 @@ class DisqusAPI(Resource):
         'json': lambda x: simplejson.loads(x),
     }
 
-    def __init__(self, secret_key=None, public_key=None, format='json', version='3.0', is_secure=False):
+    def __init__(self, secret_key=None, public_key=None, format='json', version='3.0', **kwargs):
         self.secret_key = secret_key
         self.public_key = public_key
         if not public_key:
             warnings.warn('You should use ``public_key`` in addition to your secret key for signing requests.')
         self.format = format
         self.version = version
-        self.is_secure = is_secure
         super(DisqusAPI, self).__init__(self)
 
     def _request(self, **kwargs):

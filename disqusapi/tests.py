@@ -3,7 +3,6 @@ import os
 import unittest
 
 import disqusapi
-from disqusapi.utils import get_mac_signature
 
 def requires(*env_vars):
     def wrapped(func):
@@ -81,77 +80,6 @@ class DisqusAPITest(unittest.TestCase):
                 if n % 10 == 0:
                     iterator.next()
         self.assertEquals(n, 99)
-
-    def test_signed_request(self):
-        api = disqusapi.DisqusAPI(self.API_SECRET, self.API_PUBLIC)
-
-        with mock.patch('httplib.HTTPConnection.request') as request:
-            with mock.patch('httplib.HTTPConnection.getresponse') as getresponse:
-                getresponse.return_value = MockResponse('''{
-                    "response": {}
-                }''', status=200)
-                api.posts.list(forum='disqus')
-
-            args, kwargs = request.call_args
-        self.assertEquals(args[0], 'GET')
-        self.assertEquals(args[1], '/api/3.0/posts/list.json?forum=disqus')
-        body = args[2].split('\n')
-        self.assertEquals(len(body), 8) # 6 parts to a signed body
-        timestamp, nonce = body[0].split(':')
-        self.assertTrue(len(nonce) <= 32)
-        self.assertEquals(body[1], 'GET')
-        self.assertEquals(body[2], '/api/3.0/posts/list.json?forum=disqus')
-        self.assertEquals(body[3], 'disqus.com')
-        self.assertEquals(body[4], '80')
-        self.assertEquals(body[5], 'ytsXfVhvWMMkPyBsMPkn6DYXRqc=')
-        self.assertEquals(body[6], '') # ext
-        self.assertEquals(body[7], '') # always empty
-        headers = args[3]
-        signature = get_mac_signature(self.API_SECRET, args[2])
-        self.assertTrue('Authorization' in headers)
-        auth_header = 'MAC id="%s", nonce="%s:%s", body-hash="ytsXfVhvWMMkPyBsMPkn6DYXRqc=", mac="%s"' % (
-            self.API_PUBLIC,
-            timestamp,
-            nonce,
-            signature,
-        )
-        self.assertEquals(headers['Authorization'], auth_header)
-
-    def test_signed_request_with_access_token(self):
-        api = disqusapi.DisqusAPI(self.API_SECRET, self.API_PUBLIC)
-
-        with mock.patch('httplib.HTTPConnection.request') as request:
-            with mock.patch('httplib.HTTPConnection.getresponse') as getresponse:
-                getresponse.return_value = MockResponse('''{
-                    "response": {}
-                }''', status=200)
-                api.posts.list(forum='disqus', access_token='z'*64)
-
-            args, kwargs = request.call_args
-        self.assertEquals(args[0], 'GET')
-        self.assertEquals(args[1], '/api/3.0/posts/list.json?forum=disqus')
-        body = args[2].split('\n')
-        self.assertEquals(len(body), 8) # 6 parts to a signed body
-        timestamp, nonce = body[0].split(':')
-        self.assertTrue(len(nonce) <= 32)
-        self.assertEquals(body[1], 'GET')
-        self.assertEquals(body[2], '/api/3.0/posts/list.json?forum=disqus')
-        self.assertEquals(body[3], 'disqus.com')
-        self.assertEquals(body[4], '80')
-        self.assertEquals(body[5], 'ytsXfVhvWMMkPyBsMPkn6DYXRqc=')
-        self.assertEquals(body[6], '') # ext
-        self.assertEquals(body[7], '') # always empty
-        headers = args[3]
-        signature = get_mac_signature(self.API_SECRET, args[2])
-        self.assertTrue('Authorization' in headers)
-        auth_header = 'MAC id="%s", nonce="%s:%s", body-hash="ytsXfVhvWMMkPyBsMPkn6DYXRqc=", mac="%s", access_token="%s"' % (
-            self.API_PUBLIC,
-            timestamp,
-            nonce,
-            signature,
-            'z'*64,
-        )
-        self.assertEquals(headers['Authorization'], auth_header)
 
 if __name__ == '__main__':
     unittest.main()
