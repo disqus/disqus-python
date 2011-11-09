@@ -99,7 +99,7 @@ class Resource(object):
             if k not in [ x.split(':')[0] for x in kwargs.keys() ]:
                 raise ValueError('Missing required argument: %s' % k)
 
-        method = kwargs.get('method', resource.get('method'))
+        method = kwargs.pop('method', resource.get('method'))
 
         if not method:
             raise InterfaceNotDefined('Interface is not defined, you must pass ``method`` (HTTP Method).')
