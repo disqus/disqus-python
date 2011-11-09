@@ -93,7 +93,9 @@ class Resource(object):
             if k not in [ x.split(':')[0] for x in kwargs.keys() ]:
                 raise ValueError('Missing required argument: %s' % k)
 
-        if not kwargs.get('method', resource.get('method')):
+        method = kwargs.get('method', resource.get('method'))
+
+        if not method:
             raise InterfaceNotDefined('Interface is not defined, you must pass ``method`` (HTTP Method).')
 
         api = self.api
@@ -121,7 +123,7 @@ class Resource(object):
             else:
                 params.append((k, v))
 
-        if resource['method'] == 'GET':
+        if method == 'GET':
             path = '%s?%s' % (path, get_normalized_params(params))
 
         headers = {
@@ -135,7 +137,7 @@ class Resource(object):
             # (which also happens to enable oauth access tokens)
             nonce = '%s:%s' % (time.time(), uuid.uuid4().hex)
             body_hash = get_body_hash(params)
-            data = get_normalized_request_string(resource['method'], url, nonce, params, body_hash=body_hash)
+            data = get_normalized_request_string(method, url, nonce, params, body_hash=body_hash)
             signature = get_mac_signature(kwargs.pop('secret_key', api.secret_key), data)
             auth_params = [
                 ('id', public_key),
@@ -151,12 +153,12 @@ class Resource(object):
             if 'api_secret' not in kwargs:
                 kwargs['api_secret'] = api.secret_key
 
-            if resource['method'] == 'GET':
+            if method == 'GET':
                 data = ''
             else:
                 data = urllib.urlencode(data)
 
-        conn.request(resource['method'], path, data, headers)
+        conn.request(method, path, data, headers)
 
         response = conn.getresponse()
         # Let's coerce it to Python
