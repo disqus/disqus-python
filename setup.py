@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='disqus-python',
-    version='0.3.3',
+    version='0.3.4',
     author='DISQUS',
     author_email='david@disqus.com',
     url='http://github.com/disqus/disqus-python',
