@@ -21,7 +21,9 @@ import uuid
 import warnings
 
 from disqusapi.paginator import Paginator
-from disqusapi.utils import get_normalized_request_string, get_mac_signature, get_body_hash
+from disqusapi.utils import (get_normalized_params,
+                             get_normalized_request_string, get_mac_signature,
+                             get_body_hash)
 
 __all__ = ['DisqusAPI', 'Paginator']
 
@@ -88,7 +90,7 @@ class Resource(object):
         # Handle undefined interfaces
         resource = self.interface
         for k in resource.get('required', []):
-            if not kwargs.get(k):
+            if k not in [ x.split(':')[0] for x in kwargs.keys() ]:
                 raise ValueError('Missing required argument: %s' % k)
 
         if not kwargs.get('method', resource.get('method')):
@@ -120,7 +122,7 @@ class Resource(object):
                 params.append((k, v))
 
         if resource['method'] == 'GET':
-            path = '%s?%s' % (path, urllib.urlencode(params))
+            path = '%s?%s' % (path, get_normalized_params(params))
 
         headers = {
             'User-Agent': 'disqus-python/%s' % __version__
