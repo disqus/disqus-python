@@ -20,7 +20,7 @@ def get_normalized_request_string(method, url, nonce, params, ext='', body_hash=
     urlparts = urlparse.urlparse(url)
     if urlparts.query:
         norm_url = '%s?%s' % (urlparts.path, urlparts.query)
-    elif params and method == 'GET':
+    elif params:
         norm_url = '%s?%s' % (urlparts.path, get_normalized_params(params))
     else:
         norm_url = urlparts.path

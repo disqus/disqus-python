@@ -121,6 +121,7 @@ class Resource(object):
 
         # We need to ensure this is a list so that
         # multiple values for a key work
+        access_token = kwargs.pop('access_token', None)
         params = []
         for k, v in kwargs.iteritems():
             if isinstance(v, (list, tuple)):
@@ -151,7 +152,6 @@ class Resource(object):
                 ('body-hash', body_hash),
                 ('mac', signature),
             ]
-            access_token = kwargs.pop('access_token', None)
             if access_token:
                 auth_params.append(('access_token', access_token))
             headers['Authorization'] = 'MAC %s' % ', '.join('%s="%s"' % (k, v) for k, v in auth_params)
