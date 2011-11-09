@@ -156,7 +156,7 @@ class DisqusAPI(Resource):
         self.secret_key = secret_key
         self.public_key = public_key
         if not public_key:
-            warnings.warn('You should use ``public_key`` in addition to your secret key for signing requests.')
+            warnings.warn('You should pass ``public_key`` in addition to your secret key.')
         self.format = format
         self.version = version
         super(DisqusAPI, self).__init__(self)
