@@ -13,8 +13,10 @@ setup(
     zip_safe=False,
     test_suite='nose.collector',
     install_requires=['simplejson'],
-    tests_require=[
+    setup_requires=[
         'nose>=1.0',
+    ],
+    tests_require=[
         'unittest2',
         'mock',
     ],
