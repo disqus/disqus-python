@@ -12,8 +12,9 @@ setup(
     packages=find_packages(),
     zip_safe=False,
     test_suite='nose.collector',
+    setup_requires=['nose>=1.0'],
     install_requires=['simplejson'],
-    tests_require=['nose', 'unittest2', 'mock'],
+    tests_require=['unittest2', 'mock'],
     include_package_data=True,
     classifiers=[
         'Intended Audience :: Developers',
