@@ -107,9 +107,9 @@ class Resource(object):
 
         path = '/api/%s/%s.%s' % (version, '/'.join(self.tree), format)
 
-        if 'api_secret' not in kwargs:
+        if 'api_secret' not in kwargs and api.secret_key:
             kwargs['api_secret'] = api.secret_key
-        if 'api_public' not in kwargs:
+        if 'api_public' not in kwargs and api.public_key:
             kwargs['api_key'] = api.public_key
 
         # We need to ensure this is a list so that
