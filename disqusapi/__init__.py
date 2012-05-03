@@ -26,7 +26,11 @@ INTERFACES = simplejson.loads(open(os.path.join(os.path.dirname(__file__), 'inte
 
 HOST = 'disqus.com'
 
-class InterfaceNotDefined(NotImplementedError): pass
+
+class InterfaceNotDefined(NotImplementedError):
+    pass
+
+
 class APIError(Exception):
     def __init__(self, code, message):
         self.code = code
@@ -35,11 +39,14 @@ class APIError(Exception):
     def __str__(self):
         return '%s: %s' % (self.code, self.message)
 
-class InvalidAccessToken(APIError): pass
+
+class InvalidAccessToken(APIError):
+    pass
 
 ERROR_MAP = {
     18: InvalidAccessToken,
 }
+
 
 class Result(object):
     def __init__(self, response, cursor=None):
@@ -64,6 +71,7 @@ class Result(object):
 
     def __contains__(self, key):
         return list.__contains__(self.response, key)
+
 
 class Resource(object):
     def __init__(self, api, interface=INTERFACES, node=None, tree=()):
@@ -90,7 +98,7 @@ class Resource(object):
         # Handle undefined interfaces
         resource = self.interface
         for k in resource.get('required', []):
-            if k not in [ x.split(':')[0] for x in kwargs.keys() ]:
+            if k not in (x.split(':')[0] for x in kwargs.iterkeys()):
                 raise ValueError('Missing required argument: %s' % k)
 
         method = kwargs.pop('method', resource.get('method'))
@@ -144,6 +152,7 @@ class Resource(object):
         if isinstance(data['response'], list):
             return Result(data['response'], data.get('cursor'))
         return data['response']
+
 
 class DisqusAPI(Resource):
     formats = {
