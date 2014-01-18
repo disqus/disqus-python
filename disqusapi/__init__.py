@@ -160,14 +160,14 @@ class DisqusAPI(Resource):
         'json': lambda x: simplejson.loads(x),
     }
 
-    def __init__(self, secret_key=None, public_key=None, format='json', version='3.0', **kwargs):
+    def __init__(self, secret_key=None, public_key=None, format='json', version='3.0', timeout=None, **kwargs):
         self.secret_key = secret_key
         self.public_key = public_key
         if not public_key:
             warnings.warn('You should pass ``public_key`` in addition to your secret key.')
         self.format = format
         self.version = version
-        self.timeout = kwargs.get('timeout', socket.getdefaulttimeout())
+        self.timeout = timeout or socket.getdefaulttimeout()
         super(DisqusAPI, self).__init__(self)
 
     def _request(self, **kwargs):

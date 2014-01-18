@@ -1,6 +1,7 @@
 import mock
 import os
 import unittest
+import socket
 
 import disqusapi
 
@@ -59,6 +60,8 @@ class DisqusAPITest(unittest.TestCase):
         self.assertEquals(api.version, '3.1')
 
     def test_setTimeout(self):
+        api = disqusapi.DisqusAPI()
+        self.assertEquals(api.timeout, socket.getdefaulttimeout())
         api = disqusapi.DisqusAPI(timeout=30)
         self.assertEquals(api.timeout, 30)
         api.setTimeout(60)
