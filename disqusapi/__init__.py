@@ -189,3 +189,6 @@ class DisqusAPI(Resource):
 
     def setVersion(self, version):
         self.version = version
+
+    def setTimeout(self, timeout):
+        self.timeout = timeout

@@ -58,6 +58,12 @@ class DisqusAPITest(unittest.TestCase):
         api.setVersion('3.1')
         self.assertEquals(api.version, '3.1')
 
+    def test_setTimeout(self):
+        api = disqusapi.DisqusAPI(timeout=30)
+        self.assertEquals(api.timeout, 30)
+        api.setTimeout(60)
+        self.assertEquals(api.timeout, 60)
+
     def test_paginator(self):
         def iter_results():
             for n in xrange(11):
