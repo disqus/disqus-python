@@ -17,6 +17,7 @@ import os.path
 import simplejson
 import urllib
 import warnings
+import socket
 
 from disqusapi.paginator import Paginator
 
@@ -111,7 +112,7 @@ class Resource(object):
         version = kwargs.pop('version', api.version)
         format = kwargs.pop('format', api.format)
 
-        conn = httplib.HTTPSConnection(HOST)
+        conn = httplib.HTTPSConnection(HOST, timeout=api.timeout)
 
         path = '/api/%s/%s.%s' % (version, '/'.join(self.tree), format)
 
@@ -166,6 +167,7 @@ class DisqusAPI(Resource):
             warnings.warn('You should pass ``public_key`` in addition to your secret key.')
         self.format = format
         self.version = version
+        self.timeout = kwargs.get('timeout', socket.getdefaulttimeout())
         super(DisqusAPI, self).__init__(self)
 
     def _request(self, **kwargs):
