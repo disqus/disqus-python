@@ -144,7 +144,11 @@ class Resource(object):
         conn.request(method, path, data, headers)
 
         response = conn.getresponse()
-        # Let's coerce it to Python
+
+        # Close connection
+        conn.close()
+
+        # Coerce response to Python
         data = api.formats[format](response.read())
 
         if response.status != 200:
