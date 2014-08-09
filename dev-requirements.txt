@@ -1,0 +1,5 @@
+-e .
+flake8
+mock
+nose
+wheel
