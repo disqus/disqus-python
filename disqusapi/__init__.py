@@ -14,6 +14,7 @@ except:
 
 from six.moves import http_client as httplib
 from six.moves import urllib
+import six
 import os.path
 import simplejson
 import warnings
@@ -99,7 +100,7 @@ class Resource(object):
         # Handle undefined interfaces
         resource = self.interface
         for k in resource.get('required', []):
-            if k not in (x.split(':')[0] for x in kwargs.iterkeys()):
+            if k not in (x.split(':')[0] for x in six.iterkeys(kwargs)):
                 raise ValueError('Missing required argument: %s' % k)
 
         method = kwargs.pop('method', resource.get('method'))
@@ -124,7 +125,7 @@ class Resource(object):
         # We need to ensure this is a list so that
         # multiple values for a key work
         params = []
-        for k, v in kwargs.iteritems():
+        for k, v in six.iteritems(kwargs):
             if isinstance(v, (list, tuple)):
                 for val in v:
                     params.append((k, val))
