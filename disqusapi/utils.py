@@ -1,8 +1,8 @@
 import binascii
 import hashlib
 import hmac
-import urllib
-import urlparse
+from six.moves import urllib
+from six.moves import urllib_parse as urlparse
 
 def get_normalized_params(params):
     """
