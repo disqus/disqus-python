@@ -28,7 +28,8 @@ from disqusapi.compat import urllib_parse as urllib
 
 __all__ = ['DisqusAPI', 'Paginator']
 
-INTERFACES = json.load(open(os.path.join(os.path.dirname(__file__), 'interfaces.json'), 'r'))
+with open(os.path.join(os.path.dirname(__file__), 'interfaces.json')) as fp:
+    INTERFACES = json.load(fp)
 
 HOST = 'disqus.com'
 
