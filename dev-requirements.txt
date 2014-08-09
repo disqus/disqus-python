@@ -2,4 +2,5 @@
 flake8
 mock
 nose
+twine
 wheel
