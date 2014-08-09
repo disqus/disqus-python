@@ -16,15 +16,19 @@ from six.moves import http_client as httplib
 from six.moves import urllib_parse as urllib
 import six
 import os.path
-import simplejson
 import warnings
 import socket
+
+try:
+    import simplejson as json
+except ImportError:
+    import json
 
 from disqusapi.paginator import Paginator
 
 __all__ = ['DisqusAPI', 'Paginator']
 
-INTERFACES = simplejson.loads(open(os.path.join(os.path.dirname(__file__), 'interfaces.json'), 'r').read())
+INTERFACES = json.loads(open(os.path.join(os.path.dirname(__file__), 'interfaces.json'), 'r').read())
 
 HOST = 'disqus.com'
 
@@ -162,7 +166,7 @@ class Resource(object):
 
 class DisqusAPI(Resource):
     formats = {
-        'json': lambda x: simplejson.loads(x),
+        'json': json.loads,
     }
 
     def __init__(self, secret_key=None, public_key=None, format='json', version='3.0', timeout=None, **kwargs):

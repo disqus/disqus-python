@@ -12,7 +12,7 @@ setup(
     packages=find_packages(),
     zip_safe=False,
     test_suite='nose.collector',
-    install_requires=['simplejson'],
+    install_requires=[],
     setup_requires=[
         'nose>=1.0',
     ],
