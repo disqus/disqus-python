@@ -1,11 +1,10 @@
-from six.moves import xrange
-import six
 import mock
 import os
 import socket
 import unittest
 
 import disqusapi
+from disqusapi.compat import xrange
 
 def requires(*env_vars):
     def wrapped(func):
@@ -84,12 +83,12 @@ class DisqusAPITest(unittest.TestCase):
 
         with mock.patch('disqusapi.Resource._request') as _request:
             iterator = iter_results()
-            _request.return_value = six.advance_iterator(iterator)
+            _request.return_value = next(iterator)
             paginator = disqusapi.Paginator(api.posts.list, forum='disqus')
             n = 0
             for n, result in enumerate(paginator(limit=100)):
                 if n % 10 == 0:
-                    six.advance_iterator(iterator)
+                    next(iterator)
         self.assertEquals(n, 99)
 
 if __name__ == '__main__':

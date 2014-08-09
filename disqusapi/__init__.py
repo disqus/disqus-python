@@ -12,9 +12,6 @@ try:
 except Exception:  # pragma: no cover
     __version__ = 'unknown'
 
-from six.moves import http_client as httplib
-from six.moves import urllib_parse as urllib
-import six
 import os.path
 import warnings
 import socket
@@ -25,6 +22,9 @@ except ImportError:
     import json
 
 from disqusapi.paginator import Paginator
+from disqusapi import compat
+from disqusapi.compat import http_client as httplib
+from disqusapi.compat import urllib_parse as urllib
 
 __all__ = ['DisqusAPI', 'Paginator']
 
@@ -104,7 +104,7 @@ class Resource(object):
         # Handle undefined interfaces
         resource = self.interface
         for k in resource.get('required', []):
-            if k not in (x.split(':')[0] for x in six.iterkeys(kwargs)):
+            if k not in (x.split(':')[0] for x in compat.iterkeys(kwargs)):
                 raise ValueError('Missing required argument: %s' % k)
 
         method = kwargs.pop('method', resource.get('method'))
@@ -129,7 +129,7 @@ class Resource(object):
         # We need to ensure this is a list so that
         # multiple values for a key work
         params = []
-        for k, v in six.iteritems(kwargs):
+        for k, v in compat.iteritems(kwargs):
             if isinstance(v, (list, tuple)):
                 for val in v:
                     params.append((k, val))

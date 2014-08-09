@@ -1,15 +1,14 @@
 import binascii
 import hashlib
 import hmac
-from six.moves import urllib
-from six.moves import urllib_parse as urlparse
+from disqusapi.compat import urllib_parse as urlparse
 
 def get_normalized_params(params):
     """
     Given a list of (k, v) parameters, returns
     a sorted, encoded normalized param
     """
-    return urllib.urlencode(sorted(params))
+    return urlparse.urlencode(sorted(params))
 
 def get_normalized_request_string(method, url, nonce, params, ext='', body_hash=None):
     """
