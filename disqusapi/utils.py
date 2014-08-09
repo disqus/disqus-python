@@ -3,12 +3,14 @@ import hashlib
 import hmac
 from disqusapi.compat import urllib_parse as urlparse
 
+
 def get_normalized_params(params):
     """
     Given a list of (k, v) parameters, returns
     a sorted, encoded normalized param
     """
     return urlparse.urlencode(sorted(params))
+
 
 def get_normalized_request_string(method, url, nonce, params, ext='', body_hash=None):
     """
@@ -40,6 +42,7 @@ def get_normalized_request_string(method, url, nonce, params, ext='', body_hash=
 
     return '\n'.join(map(str, output))
 
+
 def get_body_hash(params):
     """
     Returns BASE64 ( HASH (text) ) as described in OAuth2 MAC spec.
@@ -49,6 +52,7 @@ def get_body_hash(params):
     norm_params = get_normalized_params(params)
 
     return binascii.b2a_base64(hashlib.sha1(norm_params).digest())[:-1]
+
 
 def get_mac_signature(api_secret, norm_request_string):
     """

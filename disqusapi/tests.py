@@ -6,6 +6,7 @@ import unittest
 import disqusapi
 from disqusapi.compat import xrange
 
+
 def requires(*env_vars):
     def wrapped(func):
         for k in env_vars:
@@ -14,6 +15,7 @@ def requires(*env_vars):
         return func
     return wrapped
 
+
 class MockResponse(object):
     def __init__(self, body, status=200):
         self.body = body
@@ -21,6 +23,7 @@ class MockResponse(object):
 
     def read(self):
         return self.body
+
 
 class DisqusAPITest(unittest.TestCase):
     API_SECRET = 'b'*64

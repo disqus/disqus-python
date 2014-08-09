@@ -4,7 +4,7 @@ dev:
 lint:
 	flake8 disqusapi/
 
-test:
+test: lint
 	nosetests
 
 clean:

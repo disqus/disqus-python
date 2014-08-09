@@ -111,7 +111,8 @@ class Resource(object):
         method = kwargs.pop('method', resource.get('method'))
 
         if not method:
-            raise InterfaceNotDefined('Interface is not defined, you must pass ``method`` (HTTP Method).')
+            raise InterfaceNotDefined(
+                'Interface is not defined, you must pass ``method`` (HTTP Method).')
 
         api = self.api
 
@@ -170,7 +171,8 @@ class DisqusAPI(Resource):
         'json': json.loads,
     }
 
-    def __init__(self, secret_key=None, public_key=None, format='json', version='3.0', timeout=None, **kwargs):
+    def __init__(self, secret_key=None, public_key=None, format='json', version='3.0',
+                 timeout=None, **kwargs):
         self.secret_key = secret_key
         self.public_key = public_key
         if not public_key:

@@ -11,8 +11,8 @@ if PY3:
 
     xrange = range
 
-    import http.client as http_client
-    import urllib.parse as urllib_parse
+    import http.client as http_client  # NOQA
+    import urllib.parse as urllib_parse  # NOQA
 else:
     def iterkeys(d, **kw):
         return iter(d.iterkeys(**kw))
@@ -22,5 +22,5 @@ else:
 
     xrange = xrange
 
-    import httplib as http_client
-    import urllib as urllib_parse
+    import httplib as http_client  # NOQA
+    import urllib as urllib_parse  # NOQA
