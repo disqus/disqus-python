@@ -9,7 +9,7 @@ disqus.trends.listThreads()
 try:
     __version__ = __import__('pkg_resources') \
         .get_distribution('disqusapi').version
-except:
+except Exception:  # pragma: no cover
     __version__ = 'unknown'
 
 from six.moves import http_client as httplib
