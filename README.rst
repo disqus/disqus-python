@@ -27,4 +27,4 @@ Paginating through endpoints is easy as well::
 	for result in paginator(limit=500):
 	    print result
 
-Documentation on all methods, as well as general API usage can be found at http://disqus.com/api/
+Documentation on all methods, as well as general API usage can be found at https://disqus.com/api/docs/
