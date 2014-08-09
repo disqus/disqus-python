@@ -12,7 +12,7 @@ try:
 except:
     __version__ = 'unknown'
 
-import httplib
+from six.moves import http_client
 import os.path
 import simplejson
 import urllib

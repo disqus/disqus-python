@@ -1,7 +1,9 @@
+from six.moves import xrange
+import six
 import mock
 import os
-import unittest
 import socket
+import unittest
 
 import disqusapi
 
@@ -69,7 +71,7 @@ class DisqusAPITest(unittest.TestCase):
 
     def test_paginator(self):
         def iter_results():
-            for n in xrange(11):
+            for n in six.moves.xrange(11):
                 yield disqusapi.Result(
                     response=[n]*10,
                     cursor={
@@ -82,12 +84,12 @@ class DisqusAPITest(unittest.TestCase):
 
         with mock.patch('disqusapi.Resource._request') as _request:
             iterator = iter_results()
-            _request.return_value = iterator.next()
+            _request.return_value = six.advance_iterator(iterator)
             paginator = disqusapi.Paginator(api.posts.list, forum='disqus')
             n = 0
             for n, result in enumerate(paginator(limit=100)):
                 if n % 10 == 0:
-                    iterator.next()
+                    six.advance_iterator(iterator)
         self.assertEquals(n, 99)
 
 if __name__ == '__main__':
