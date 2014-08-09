@@ -8,5 +8,5 @@ python:
 install:
     - pip install -r dev-requirements.txt
 script:
-    - flake8 disqusapi/
-    - nosetests
+    - flake8 disqusapi/ -v
+    - py.test -v

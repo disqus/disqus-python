@@ -5,7 +5,7 @@ lint:
 	flake8 disqusapi/
 
 test: lint
-	nosetests
+	py.test
 
 clean:
 	rm -rf *.egg-info *.egg dist/ build/

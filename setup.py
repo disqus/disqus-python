@@ -1,6 +1,20 @@
 #!/usr/bin/env python
 
 from setuptools import setup, find_packages
+from setuptools.command.test import test as TestCommand
+
+
+class PyTest(TestCommand):
+    def finalize_options(self):
+        TestCommand.finalize_options(self)
+        self.test_args = []
+        self.test_suite = True
+
+    def run_tests(self):
+        import pytest
+        import sys
+        sys.exit(pytest.main(self.test_args))
+
 
 setup(
     name='disqus-python',
@@ -16,10 +30,10 @@ setup(
     install_requires=[],
     setup_requires=[],
     tests_require=[
-        'nose>=1.0',
-        'unittest2',
+        'pytest',
         'mock',
     ],
+    cmdclass={'test': PyTest},
     include_package_data=True,
     classifiers=[
         'Intended Audience :: Developers',

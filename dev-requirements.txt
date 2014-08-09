@@ -1,6 +1,6 @@
 -e .
 flake8
 mock
-nose
+pytest
 twine
 wheel
