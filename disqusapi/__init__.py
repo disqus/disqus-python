@@ -12,10 +12,10 @@ try:
 except:
     __version__ = 'unknown'
 
-from six.moves import http_client
+from six.moves import http_client as httplib
+from six.moves import urllib
 import os.path
 import simplejson
-import urllib
 import warnings
 import socket
 
