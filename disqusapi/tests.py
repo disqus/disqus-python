@@ -71,7 +71,7 @@ class DisqusAPITest(unittest.TestCase):
 
     def test_paginator(self):
         def iter_results():
-            for n in six.moves.xrange(11):
+            for n in xrange(11):
                 yield disqusapi.Result(
                     response=[n]*10,
                     cursor={
