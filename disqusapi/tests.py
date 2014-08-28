@@ -16,6 +16,17 @@ def requires(*env_vars):
     return wrapped
 
 
+def iter_results():
+    for n in xrange(11):
+        yield disqusapi.Result(
+            response=[n] * 10,
+            cursor={
+                'id': n,
+                'more': n < 10,
+            },
+        )
+
+
 class MockResponse(object):
     def __init__(self, body, status=200):
         self.body = body
@@ -26,8 +37,8 @@ class MockResponse(object):
 
 
 class DisqusAPITest(unittest.TestCase):
-    API_SECRET = 'b'*64
-    API_PUBLIC = 'c'*64
+    API_SECRET = 'b' * 64
+    API_PUBLIC = 'c' * 64
     HOST = os.environ.get('DISQUS_API_HOST', disqusapi.HOST)
 
     def setUp(self):
@@ -72,18 +83,19 @@ class DisqusAPITest(unittest.TestCase):
         self.assertEquals(api.timeout, 60)
 
     def test_paginator(self):
-        def iter_results():
-            for n in xrange(11):
-                yield disqusapi.Result(
-                    response=[n]*10,
-                    cursor={
-                        'id': n,
-                        'more': n < 10,
-                    },
-                )
-
         api = disqusapi.DisqusAPI(self.API_SECRET, self.API_PUBLIC)
+        with mock.patch('disqusapi.Resource._request') as _request:
+            iterator = iter_results()
+            _request.return_value = next(iterator)
+            paginator = disqusapi.Paginator(api, 'posts.list', forum='disqus')
+            n = 0
+            for n, result in enumerate(paginator(limit=100)):
+                if n % 10 == 0:
+                    next(iterator)
+        self.assertEquals(n, 99)
 
+    def test_paginator_legacy(self):
+        api = disqusapi.DisqusAPI(self.API_SECRET, self.API_PUBLIC)
         with mock.patch('disqusapi.Resource._request') as _request:
             iterator = iter_results()
             _request.return_value = next(iterator)
@@ -93,6 +105,21 @@ class DisqusAPITest(unittest.TestCase):
                 if n % 10 == 0:
                     next(iterator)
         self.assertEquals(n, 99)
+
+    def test_endpoint(self):
+        api = disqusapi.DisqusAPI(self.API_SECRET, self.API_PUBLIC)
+        with mock.patch('disqusapi.Resource._request') as _request:
+            iterator = iter_results()
+            _request.return_value = iterator.next()
+            response1 = api.posts.list(forum='disqus')
+
+        with mock.patch('disqusapi.Resource._request') as _request:
+            iterator = iter_results()
+            _request.return_value = iterator.next()
+            response2 = api.get('posts.list', forum='disqus')
+
+        self.assertEquals(len(response1), len(response2))
+
 
 if __name__ == '__main__':
     unittest.main()
