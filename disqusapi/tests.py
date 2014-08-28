@@ -110,12 +110,12 @@ class DisqusAPITest(unittest.TestCase):
         api = disqusapi.DisqusAPI(self.API_SECRET, self.API_PUBLIC)
         with mock.patch('disqusapi.Resource._request') as _request:
             iterator = iter_results()
-            _request.return_value = iterator.next()
+            _request.return_value = next(iterator)
             response1 = api.posts.list(forum='disqus')
 
         with mock.patch('disqusapi.Resource._request') as _request:
             iterator = iter_results()
-            _request.return_value = iterator.next()
+            _request.return_value = next(iterator)
             response2 = api.get('posts.list', forum='disqus')
 
         self.assertEquals(len(response1), len(response2))
