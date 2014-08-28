@@ -12,17 +12,17 @@ Use the API by instantiating it, and then calling the method through dotted nota
 
 	from disqusapi import DisqusAPI
 	disqus = DisqusAPI(secret_key, public_key)
-	for result in disqus.trends.listThreads():
+	for result in disqus.get('trends.listThreads'):
 	    print result
 
 Parameters (including the ability to override version, api_secret, and format) are passed as keyword arguments to the resource call::
 
-	disqus.posts.details(post=1, version='3.0')
+	disqus.get('posts.details', post=1, version='3.0')
 
 Paginating through endpoints is easy as well::
 
 	from disqusapi import Paginator
-	paginator = Paginator(api.trends.listThreads, forum='disqus')
+	paginator = Paginator(api.get, 'trends.listThreads', forum='disqus')
 	for result in paginator:
 	    print result
 

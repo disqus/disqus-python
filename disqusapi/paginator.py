@@ -2,7 +2,7 @@ class Paginator(object):
     """
     Paginate through all entries:
 
-    >>> paginator = Paginator(api.trends.listThreads, forum='disqus')
+    >>> paginator = Paginator(api, 'trends.listThreads', forum='disqus')
     >>> for result in paginator:
     >>>     print result
 
@@ -12,8 +12,16 @@ class Paginator(object):
     >>>     print result
     """
 
-    def __init__(self, endpoint, **params):
-        self.endpoint = endpoint
+    def __init__(self, *args, **params):
+        from disqusapi import InterfaceNotDefined
+        if len(args) == 2:
+            self.method = args[0]
+            self.endpoint = args[1]
+        elif len(args) == 1:
+            self.method = None
+            self.endpoint = args[0]
+        else:
+            raise InterfaceNotDefined
         self.params = params
 
     def __iter__(self):
@@ -25,7 +33,10 @@ class Paginator(object):
         num = 0
         more = True
         while more and (not limit or num < limit):
-            results = self.endpoint(**params)
+            if self.method:
+                results = self.method(self.endpoint, **params)
+            else:
+                results = self.endpoint(**params)
             for result in results:
                 if limit and num >= limit:
                     break

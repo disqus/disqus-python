@@ -3,7 +3,7 @@ disqus-python
 ~~~~~~~~~~~~~
 
 disqus = DisqusAPI(api_secret=secret_key)
-disqus.trends.listThreads()
+disqus.get('trends.listThreads')
 
 """
 try:
@@ -25,6 +25,7 @@ from disqusapi.paginator import Paginator
 from disqusapi import compat
 from disqusapi.compat import http_client as httplib
 from disqusapi.compat import urllib_parse as urllib
+from disqusapi.utils import build_interfaces_by_method
 
 __all__ = ['DisqusAPI', 'Paginator']
 
@@ -81,10 +82,10 @@ class Result(object):
 
 
 class Resource(object):
-    def __init__(self, api, interface=INTERFACES, node=None, tree=()):
+    def __init__(self, api, interfaces=INTERFACES, node=None, tree=()):
         self.api = api
         self.node = node
-        self.interface = interface
+        self.interfaces = interfaces
         if node:
             tree = tree + (node,)
         self.tree = tree
@@ -92,18 +93,27 @@ class Resource(object):
     def __getattr__(self, attr):
         if attr in getattr(self, '__dict__'):
             return getattr(self, attr)
-        interface = self.interface
-        if attr not in interface:
-            interface[attr] = {}
-            # raise InterfaceNotDefined(attr)
-        return Resource(self.api, interface[attr], attr, self.tree)
+        interface = {}
+        try:
+            interface = self.interfaces[attr]
+        except KeyError:
+            try:
+                interface = self.interfaces_by_method[attr]
+            except KeyError:
+                pass
+        return Resource(self.api, interface, attr, self.tree)
 
-    def __call__(self, **kwargs):
-        return self._request(**kwargs)
+    def __call__(self, *args, **kwargs):
+        return self._request(*args, **kwargs)
 
-    def _request(self, **kwargs):
-        # Handle undefined interfaces
-        resource = self.interface
+    def _request(self, *args, **kwargs):
+        if args:
+            # Handle undefined interfaces
+            resource = self.interfaces.get(args[0], {})
+            endpoint = args[0].replace('.', '/')
+        else:
+            resource = self.interfaces
+            endpoint = '/'.join(self.tree)
         for k in resource.get('required', []):
             if k not in (x.split(':')[0] for x in compat.iterkeys(kwargs)):
                 raise ValueError('Missing required argument: %s' % k)
@@ -119,9 +129,7 @@ class Resource(object):
         version = kwargs.pop('version', api.version)
         format = kwargs.pop('format', api.format)
 
-        conn = httplib.HTTPSConnection(HOST, timeout=api.timeout)
-
-        path = '/api/%s/%s.%s' % (version, '/'.join(self.tree), format)
+        path = '/api/%s/%s.%s' % (version, endpoint, format)
 
         if 'api_secret' not in kwargs and api.secret_key:
             kwargs['api_secret'] = api.secret_key
@@ -148,8 +156,8 @@ class Resource(object):
         else:
             data = urllib.urlencode(params)
 
+        conn = httplib.HTTPSConnection(HOST, timeout=api.timeout)
         conn.request(method, path, data, headers)
-
         response = conn.getresponse()
 
         # Coerce response to Python
@@ -172,7 +180,7 @@ class DisqusAPI(Resource):
     }
 
     def __init__(self, secret_key=None, public_key=None, format='json', version='3.0',
-                 timeout=None, **kwargs):
+                 timeout=None, interfaces=INTERFACES, **kwargs):
         self.secret_key = secret_key
         self.public_key = public_key
         if not public_key:
@@ -180,10 +188,9 @@ class DisqusAPI(Resource):
         self.format = format
         self.version = version
         self.timeout = timeout or socket.getdefaulttimeout()
+        self.interfaces = interfaces
+        self.interfaces_by_method = build_interfaces_by_method(self.interfaces)
         super(DisqusAPI, self).__init__(self)
-
-    def _request(self, **kwargs):
-        raise SyntaxError('You cannot call the API without a resource.')
 
     def _get_key(self):
         return self.secret_key
@@ -204,3 +211,7 @@ class DisqusAPI(Resource):
 
     def setTimeout(self, timeout):
         self.timeout = timeout
+
+    def update_interface(self, new_interface):
+        self.interfaces.update(new_interface)
+        self.interfaces_by_method = build_interfaces_by_method(self.interfaces)

@@ -1,3 +1,14 @@
+0.5.0
+
+* Added tox support.
+* New invovation api.<method>(<endpoint>, <params>) where endpoint
+  is a string. This to add compatibility when the endpoint contains
+  reserved words.
+* Python 3 support.
+* Removed simplejson dependency
+* Travis CI support.
+* Added socket timeout.
+
 0.4.1
 
 * Fixed behavior when api_secret or api_public are not set.
