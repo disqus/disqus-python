@@ -6,6 +6,22 @@ import unittest
 import disqusapi
 from disqusapi.compat import xrange
 
+extra_interface = {
+    "reserved": {
+        "global": {
+            "word": {
+                "method": "GET",
+                "required": [
+                    "text",
+                ],
+                "formats": [
+                    "json",
+                ],
+            }
+        }
+    }
+}
+
 
 def requires(*env_vars):
     def wrapped(func):
@@ -120,6 +136,14 @@ class DisqusAPITest(unittest.TestCase):
 
         self.assertEquals(len(response1), len(response2))
 
+    def test_update_interface_legacy(self):
+        api = disqusapi.DisqusAPI(self.API_SECRET, self.API_PUBLIC)
+        with self.assertRaises(disqusapi.InterfaceNotDefined):
+            api.interface.update(extra_interface)
+
+    def test_update_interface(self):
+        api = disqusapi.DisqusAPI(self.API_SECRET, self.API_PUBLIC)
+        api.update_interface(extra_interface)
 
 if __name__ == '__main__':
     unittest.main()
