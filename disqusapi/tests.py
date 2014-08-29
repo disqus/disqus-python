@@ -148,7 +148,8 @@ class DisqusAPITest(unittest.TestCase):
             except disqusapi.InterfaceNotDefined:
                 pass
             else:
-                raise unittest.failureException('%s not raised' % (str(disqusapi.InterfaceNotDefined)))
+                raise unittest.failureException(
+                    '%s not raised' % (str(disqusapi.InterfaceNotDefined)))
 
     def test_update_interface(self):
         api = disqusapi.DisqusAPI(self.API_SECRET, self.API_PUBLIC)
