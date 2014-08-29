@@ -136,6 +136,11 @@ class DisqusAPITest(unittest.TestCase):
 
         self.assertEquals(len(response1), len(response2))
 
+    def test_update_interface_legacy(self):
+        api = disqusapi.DisqusAPI(self.API_SECRET, self.API_PUBLIC)
+        with self.assertRaises(disqusapi.InterfaceNotDefined):
+            api.interface.update(extra_interface)
+
     def test_update_interface(self):
         api = disqusapi.DisqusAPI(self.API_SECRET, self.API_PUBLIC)
         api.update_interface(extra_interface)
