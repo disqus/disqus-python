@@ -23,6 +23,23 @@ extra_interface = {
 }
 
 
+extra_interface = {
+    "reserved": {
+        "global": {
+            "word": {
+                "method": "GET",
+                "required": [
+                    "text",
+                ],
+                "formats": [
+                    "json",
+                ],
+            }
+        }
+    }
+}
+
+
 def requires(*env_vars):
     def wrapped(func):
         for k in env_vars:
