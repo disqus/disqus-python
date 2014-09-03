@@ -89,10 +89,16 @@ class Resource(object):
         if node:
             tree = tree + (node,)
         self.tree = tree
+        self.interfaces_by_method = {}
+
+    def update_interface(self, interface):
+        raise NotImplemented
 
     def __getattr__(self, attr):
         if attr in getattr(self, '__dict__'):
             return getattr(self, attr)
+        if attr == 'interface':
+            raise InterfaceNotDefined('You must use ``update_interface`` now.')
         interface = {}
         try:
             interface = self.interfaces[attr]
