@@ -1,5 +1,6 @@
 import mock
 import os
+import pytest
 import socket
 import unittest
 
@@ -155,18 +156,8 @@ class DisqusAPITest(unittest.TestCase):
 
     def test_update_interface_legacy(self):
         api = disqusapi.DisqusAPI(self.API_SECRET, self.API_PUBLIC)
-        try:
-            with self.assertRaises(disqusapi.InterfaceNotDefined):
-                api.interface.update(extra_interface)
-        except TypeError:
-            # remove when 2.6 is obsolete
-            try:
-                api.interface.update(extra_interface)
-            except disqusapi.InterfaceNotDefined:
-                pass
-            else:
-                raise unittest.failureException(
-                    '%s not raised' % (str(disqusapi.InterfaceNotDefined)))
+        with pytest.raises(disqusapi.InterfaceNotDefined):
+            api.interface.update(extra_interface)
 
     def test_update_interface(self):
         api = disqusapi.DisqusAPI(self.API_SECRET, self.API_PUBLIC)
