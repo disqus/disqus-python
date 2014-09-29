@@ -12,6 +12,7 @@ try:
 except Exception:  # pragma: no cover
     __version__ = 'unknown'
 
+import re
 import os.path
 import warnings
 import socket
@@ -33,6 +34,9 @@ with open(os.path.join(os.path.dirname(__file__), 'interfaces.json')) as fp:
     INTERFACES = json.load(fp)
 
 HOST = 'disqus.com'
+
+CHARSET_RE = re.compile(r'charset=(\S+)')
+DEFAULT_ENCODING = 'utf-8'
 
 
 class InterfaceNotDefined(NotImplementedError):
@@ -189,6 +193,19 @@ class Resource(object):
         finally:
             # Close connection
             conn.close()
+
+        # Determine the encoding of the response and respect
+        # the Content-Type header, but default back to utf-8
+        content_type = response.getheader('Content-Type')
+        if content_type is None:
+            encoding = DEFAULT_ENCODING
+        else:
+            try:
+                encoding = CHARSET_RE.search(content_type).group(1)
+            except AttributeError:
+                encoding = DEFAULT_ENCODING
+
+        body = body.decode(encoding)
 
         try:
             data = formatter(body)
