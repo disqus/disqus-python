@@ -22,7 +22,7 @@ setup(
     author='DISQUS',
     author_email='opensource@disqus.com',
     url='https://github.com/disqus/disqus-python',
-    description = 'Disqus API Bindings',
+    description='Disqus API Bindings',
     packages=find_packages(),
     zip_safe=False,
     test_suite='nose.collector',

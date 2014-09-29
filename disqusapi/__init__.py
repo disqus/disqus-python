@@ -167,10 +167,11 @@ class Resource(object):
         response = conn.getresponse()
 
         # Coerce response to Python
-        data = api.formats[format](response.read())
-
-        # Close connection
-        conn.close()
+        try:
+            data = api.formats[format](response.read())
+        finally:
+            # Close connection
+            conn.close()
 
         if response.status != 200:
             raise ERROR_MAP.get(data['code'], APIError)(data['code'], data['response'])
