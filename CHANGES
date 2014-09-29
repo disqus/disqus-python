@@ -14,6 +14,7 @@
 * Deprecated the `setFormat` method in favor of directly setting the `format` attribute.
 * Deprecated the `setVersion` method in favor of directly setting the `version` attribute.
 * Deprecated the `setTimeout` method in favor of directly setting the `timeout` attribute.
+* Request gzipped responses from API.
 
 0.4.1
 

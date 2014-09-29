@@ -13,6 +13,7 @@ except Exception:  # pragma: no cover
     __version__ = 'unknown'
 
 import re
+import zlib
 import os.path
 import warnings
 import socket
@@ -174,7 +175,8 @@ class Resource(object):
                 params.append((k, v))
 
         headers = {
-            'User-Agent': 'disqus-python/%s' % __version__
+            'User-Agent': 'disqus-python/%s' % __version__,
+            'Accept-Encoding': 'gzip',
         }
 
         if method == 'GET':
@@ -193,6 +195,10 @@ class Resource(object):
         finally:
             # Close connection
             conn.close()
+
+        if response.getheader('Content-Encoding') == 'gzip':
+            # See: http://stackoverflow.com/a/2424549
+            body = zlib.decompress(body, 16 + zlib.MAX_WBITS)
 
         # Determine the encoding of the response and respect
         # the Content-Type header, but default back to utf-8
