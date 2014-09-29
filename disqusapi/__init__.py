@@ -47,6 +47,10 @@ class InvalidHTTPMethod(TypeError):
         return "expected 'GET' or 'POST', got: %r" % self.message
 
 
+class FormattingError(ValueError):
+    pass
+
+
 class APIError(Exception):
     def __init__(self, code, message):
         self.code = code
@@ -146,6 +150,7 @@ class Resource(object):
 
         version = kwargs.pop('version', api.version)
         format = kwargs.pop('format', api.format)
+        formatter, formatter_error = api.formats[format]
 
         path = '/api/%s/%s.%s' % (version, endpoint, format)
 
@@ -180,10 +185,15 @@ class Resource(object):
 
         # Coerce response to Python
         try:
-            data = api.formats[format](response.read())
+            body = response.read()
         finally:
             # Close connection
             conn.close()
+
+        try:
+            data = formatter(body)
+        except formatter_error:
+            raise FormattingError(body)
 
         if response.status != 200:
             raise ERROR_MAP.get(data['code'], APIError)(data['code'], data['response'])
@@ -195,7 +205,7 @@ class Resource(object):
 
 class DisqusAPI(Resource):
     formats = {
-        'json': json.loads,
+        'json': (json.loads, ValueError),
     }
 
     def __init__(self, secret_key=None, public_key=None, format='json', version='3.0',
