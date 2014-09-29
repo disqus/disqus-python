@@ -189,7 +189,6 @@ class Resource(object):
         conn.request(method, path, data, headers)
         response = conn.getresponse()
 
-        # Coerce response to Python
         try:
             body = response.read()
         finally:
@@ -214,6 +213,7 @@ class Resource(object):
         body = body.decode(encoding)
 
         try:
+            # Coerce response to Python
             data = formatter(body)
         except formatter_error:
             raise FormattingError(body)
