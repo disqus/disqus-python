@@ -1,11 +1,10 @@
 import mock
 import os
-import pytest
 import socket
-import unittest
 
 import disqusapi
 from disqusapi.compat import xrange
+from disqusapi.tests_compat import TestCase
 
 extra_interface = {
     "reserved": {
@@ -70,7 +69,7 @@ class MockResponse(object):
         return self.body
 
 
-class DisqusAPITest(unittest.TestCase):
+class DisqusAPITest(TestCase):
     API_SECRET = 'b' * 64
     API_PUBLIC = 'c' * 64
     HOST = os.environ.get('DISQUS_API_HOST', disqusapi.HOST)
@@ -156,12 +155,12 @@ class DisqusAPITest(unittest.TestCase):
 
     def test_update_interface_legacy(self):
         api = disqusapi.DisqusAPI(self.API_SECRET, self.API_PUBLIC)
-        with pytest.raises(disqusapi.InterfaceNotDefined):
+        with self.assertRaises(disqusapi.InterfaceNotDefined):
             api.interface.update(extra_interface)
 
     def test_invalid_method(self):
         api = disqusapi.DisqusAPI(self.API_SECRET, self.API_PUBLIC)
-        with pytest.raises(disqusapi.InvalidHTTPMethod):
+        with self.assertRaises(disqusapi.InvalidHTTPMethod):
             api.get('posts.list', method='lol', forum='disqus')
 
     def test_update_interface(self):
@@ -169,4 +168,5 @@ class DisqusAPITest(unittest.TestCase):
         api.update_interface(extra_interface)
 
 if __name__ == '__main__':
+    import unittest
     unittest.main()
