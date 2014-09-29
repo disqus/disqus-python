@@ -39,6 +39,14 @@ class InterfaceNotDefined(NotImplementedError):
     pass
 
 
+class InvalidHTTPMethod(TypeError):
+    def __init__(self, message):
+        self.message = message
+
+    def __str__(self):
+        return "expected 'GET' or 'POST', got: %r" % self.message
+
+
 class APIError(Exception):
     def __init__(self, code, message):
         self.code = code
@@ -129,6 +137,10 @@ class Resource(object):
         if not method:
             raise InterfaceNotDefined(
                 'Interface is not defined, you must pass ``method`` (HTTP Method).')
+
+        method = method.upper()
+        if method not in ('GET', 'POST'):
+            raise InvalidHTTPMethod(method)
 
         api = self.api
 

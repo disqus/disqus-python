@@ -159,6 +159,11 @@ class DisqusAPITest(unittest.TestCase):
         with pytest.raises(disqusapi.InterfaceNotDefined):
             api.interface.update(extra_interface)
 
+    def test_invalid_method(self):
+        api = disqusapi.DisqusAPI(self.API_SECRET, self.API_PUBLIC)
+        with pytest.raises(disqusapi.InvalidHTTPMethod):
+            api.get('posts.list', method='lol', forum='disqus')
+
     def test_update_interface(self):
         api = disqusapi.DisqusAPI(self.API_SECRET, self.API_PUBLIC)
         api.update_interface(extra_interface)
