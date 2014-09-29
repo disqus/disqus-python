@@ -109,14 +109,14 @@ class Resource(object):
                 pass
         return Resource(self.api, interface, attr, self.tree)
 
-    def __call__(self, *args, **kwargs):
-        return self._request(*args, **kwargs)
+    def __call__(self, endpoint=None, **kwargs):
+        return self._request(endpoint, **kwargs)
 
-    def _request(self, *args, **kwargs):
-        if args:
+    def _request(self, endpoint=None, **kwargs):
+        if endpoint is not None:
             # Handle undefined interfaces
-            resource = self.interfaces.get(args[0], {})
-            endpoint = args[0].replace('.', '/')
+            resource = self.interfaces.get(endpoint, {})
+            endpoint = endpoint.replace('.', '/')
         else:
             resource = self.interfaces
             endpoint = '/'.join(self.tree)
