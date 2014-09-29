@@ -198,24 +198,47 @@ class DisqusAPI(Resource):
         self.interfaces_by_method = build_interfaces_by_method(self.interfaces)
         super(DisqusAPI, self).__init__(self)
 
-    def _get_key(self):
+    @property
+    def key(self):
+        warnings.warn(
+            "'key' is deprecated in favor of directly accessing the `secret_key` attribute",
+            DeprecationWarning)
         return self.secret_key
-    key = property(_get_key)
 
     def setSecretKey(self, key):
+        warnings.warn(
+            "'setSecretKey' is deprecated in favor of directly setting the 'secret_key' attribute",
+            DeprecationWarning)
         self.secret_key = key
-    setKey = setSecretKey
+
+    def setKey(self, key):
+        warnings.warn(
+            "'setKey' is deprecated in favor of directly setting the 'secret_key' attribute",
+            DeprecationWarning)
+        self.secret_key = key
 
     def setPublicKey(self, key):
+        warnings.warn(
+            "'setPublicKey' is deprecated in favor of directly setting the 'public_key' attribute",
+            DeprecationWarning)
         self.public_key = key
 
     def setFormat(self, format):
+        warnings.warn(
+            "'setFormat' is deprecated in favor of directly setting the 'format' attribute",
+            DeprecationWarning)
         self.format = format
 
     def setVersion(self, version):
+        warnings.warn(
+            "'setVersion' is deprecated in favor of directly setting the 'version' attribute",
+            DeprecationWarning)
         self.version = version
 
     def setTimeout(self, timeout):
+        warnings.warn(
+            "'setTimeout' is deprecated in favor of directly setting the 'timeout' attribute",
+            DeprecationWarning)
         self.timeout = timeout
 
     def update_interface(self, new_interface):

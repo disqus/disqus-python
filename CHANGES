@@ -8,6 +8,12 @@
 * Removed simplejson dependency
 * Travis CI support.
 * Added socket timeout.
+* Deprecated the `setSecretKey` and `setKey` methods in favor of the `secret_key` attribute.
+* Deprecated the `key` property in favor of the `secret_key` attribute.
+* Deprecated the `setPublicKey` method in favor of directly setting the `public_key` attribute.
+* Deprecated the `setFormat` method in favor of directly setting the `format` attribute.
+* Deprecated the `setVersion` method in favor of directly setting the `version` attribute.
+* Deprecated the `setTimeout` method in favor of directly setting the `timeout` attribute.
 
 0.4.1
 
