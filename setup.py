@@ -25,7 +25,6 @@ setup(
     description='Disqus API Bindings',
     packages=find_packages(),
     zip_safe=False,
-    test_suite='nose.collector',
     license='Apache License 2.0',
     install_requires=[],
     setup_requires=[],
