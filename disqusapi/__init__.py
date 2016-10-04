@@ -184,6 +184,7 @@ class Resource(object):
             data = ''
         else:
             data = urllib.urlencode(params)
+            headers['Content-Type'] = 'application/x-www-form-urlencoded'
 
         conn = httplib.HTTPSConnection(HOST, timeout=api.timeout)
         conn.request(method, path, data, headers)
